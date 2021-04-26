@@ -18,7 +18,7 @@ const types = {
 };
 /* Simple media path validation for single page app */
 function getType(path) {
-    if (path.indexOf(`media/`) == -1) return 'html';
+    if (path == '/' || path.indexOf(`.html`) != -1) return 'html';
     for (const type in types) {
         if (path.indexOf(`.${type}`) != -1) return type;
     }
@@ -32,9 +32,9 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
         'Content-Type': mediaType == 'html' ? 'text/html' : types[mediaType]
     });
-    const filePath = mediaType != 'html' ?  public + path : htmlFile;
+    const filePath = mediaType == 'html' ? htmlFile : public + path;
     res.end(fs.readFileSync(filePath));
 });
 
 server.listen(port, '127.0.0.1');
-console.info('Server running on port '+port)
+console.info(`Server running on port ${port}`)

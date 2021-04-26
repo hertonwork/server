@@ -6,12 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic single file HTML</title>
     <meta name="description" content="Simgle file page basic page">
-    <link rel="stylesheet" type="text/css" href="media/styles.css">
-    <script type="text/javascript" src="media/scripts.js"></script>
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <script type="text/javascript" src="scripts.js" async></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="white">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
     <div class="wrapper">
-        <img src="media/favicon.ico" alt="icon"/>
+        <img src="favicon-32x32.png" width="16" height="16" alt="icon"/>
         <p>Basic Node Single file Server Setup</p>
     </div>
 </body>

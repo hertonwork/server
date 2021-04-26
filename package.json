@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Single page node server with no dependencies",
   "main": "htmlServer.js",
+  "repository": {
+    "type": "git",
+    "url": "https://git.hersidea.com/herton/server"
+  },
+  "homepage": "https://server.herton.work",
   "scripts": {
     "start": "node server.js",
     "test": "node test.js"

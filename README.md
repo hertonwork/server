@@ -19,7 +19,7 @@ Just add some tests to the test file and run `npm test`
 
 ### Preview
 
-[Preview]https://server.herton.work
+[Preview](https://server.herton.work)
 
 ## License
 

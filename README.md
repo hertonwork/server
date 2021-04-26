@@ -9,6 +9,8 @@ This is a very simple node web server with 0 dependencies but a clean structure 
 * 100% scores across-the-board on lighhouse out of the box
 * Basic PWA setup
 
+[Preview](https://server.herton.work)
+
 ## To install
 
 Just run `npm start` no need to install anything...
@@ -17,9 +19,6 @@ Just run `npm start` no need to install anything...
 
 Just add some tests to the test file and run `npm test`
 
-### Preview
-
-[Preview](https://server.herton.work)
 
 ## License
 

@@ -1,4 +1,4 @@
-# Simple Node Server for a Single Page App
+# Simple Node Server For A Single Page App
 
 This is a very simple node web server with 0 dependencies but a clean structure ready to be built upon.
 

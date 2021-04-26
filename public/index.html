@@ -4,19 +4,25 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic single file HTML</title>
+    <title>Single page node server with no dependencies</title>
     <meta name="description" content="Simgle file page basic page">
+    <!-- Above the fold styles -->
+    <style>.wrapper {max-width:500px;margin:1rem auto;text-align:center;padding:0 1rem;}</style>
+    <!-- Non blocking styles -->
     <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <!-- Assync scripts -->
     <script type="text/javascript" src="scripts.js" async></script>
+    <!-- PWA stuff -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="white">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body>
     <div class="wrapper">
-        <img src="favicon-32x32.png" width="16" height="16" alt="icon"/>
+        <img src="apple-touch-icon.png" width="90" height="90" alt="icon"/>
         <h2>Simple Node Server For A Single Page App</h2>
+        <img src="preview.jpg" width="500" height="258" alt="preview"/>
     </div>
 </body>
 </html>

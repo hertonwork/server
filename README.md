@@ -9,7 +9,12 @@ This is a very simple node web server with 0 dependencies but a clean structure 
 * 100% scores across-the-board on lighhouse out of the box
 * Basic PWA setup
 
-[Preview](https://server.herton.work)
+## Preview
+
+<p align="center">
+<a href="https://server.herton.work"><img src="https://server.herton.work/preview.jpg" alt="Preview"></a>
+</p>
+
 
 ## To install
 

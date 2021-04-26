@@ -30,6 +30,7 @@ const server = http.createServer((req, res) => {
     const mediaType = getType(path);
     if (! mediaType) res.writeHead(404).end('Not found');
     res.writeHead(200, {
+        'Cache-Control': 'max-age=31536000',
         'Content-Type': mediaType == 'html' ? 'text/html' : types[mediaType]
     });
     const filePath = mediaType == 'html' ? htmlFile : public + path;

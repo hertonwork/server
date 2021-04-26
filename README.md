@@ -9,6 +9,14 @@ This is a very simple node web server with 0 dependencies but a clean structure 
 * 100% scores across-the-board on lighhouse out of the box
 * Basic PWA setup
 
+## To install
+
+Just run `npm start` no need to install anything...
+
+## To test
+
+Just add some tests to the test file and run `npm test`
+
 ## License
 
 This is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

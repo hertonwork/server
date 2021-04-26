@@ -1,0 +1,17 @@
+{
+  "name": "single-page-server",
+  "version": "1.0.0",
+  "description": "Single page node server with no dependencies",
+  "main": "htmlServer.js",
+  "scripts": {
+    "start": "node htmlServer.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "server",
+    "single",
+    "page"
+  ],
+  "author": "Herton",
+  "license": "MIT"
+}

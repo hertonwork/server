@@ -1,4 +1,9 @@
-const http = require('http');
+const http = require('https');
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
 const { SimpleServerHelper } = require('./SimpleServerHelper.js');
 const port = process.env.PORT || 2222;
 const verbose = process.env.VERBOSE || false // To log errors and files accessed
@@ -9,7 +14,7 @@ const config = {
     verbose 
 };
 
-const server = http.createServer((request, response) => {
+const server = http.createServer(options, (request, response) => {
     new SimpleServerHelper(config, request, response).respond();
 });
 

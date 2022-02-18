@@ -18,6 +18,12 @@ This is a very simple node web server with 0 dependencies but a clean structure 
 
 ## To install
 
+The simple server needs to have ssl certificates to run.
+Follow the steps here to (Install SSL Certificate)[https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTPS-server/]
+
+Make sure to Allow invalid certificates for resources loaded from localhost on the (Chrome browser)[chrome://flags/#allow-insecure-localhost]
+
+
 Just run `npm start` no need to install anything...
 
 ## To test

@@ -146,7 +146,7 @@ npm start
     <div class="wrap mx gr g8 m-c2 wr">
       <div class="sy4 an-rise">
         <h2>What a static host does.</h2>
-        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Seventeen tests over a real socket keep it honest: <code>npm test</code>.</p>
+        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Its tests run over a real socket: <code>npm test</code>.</p>
       </div>
       <dl class="gr g5 m-c2 an-rise">
         <div><dt class="sb">Safe paths</dt><dd class="t1 mt1">Every URL resolves inside <code>public/</code>. <code>../</code>, encoded dots, doubled slashes and dotfiles can't escape it; <code>/.well-known/</code> can.</dd></div>
@@ -224,9 +224,12 @@ npm run build        # site/ → public/ (this page, the service worker)</code><
         </div>
         <div class="sy4 an-rise">
           <p class="t4 b">Your agent</p>
-          <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server.</p>
+          <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server. And the server speaks MCP: started with <code>MCP=1</code>, an agent can list and read what it serves and see exactly how it answers any path.</p>
           <pre class="r bg p4"><code>npx skills add hertonwork/server
-npm run check        # tests + preflight (+ Lighthouse when installed)</code></pre>
+npm run check        # tests + preflight (+ Lighthouse)
+MCP=1 npm start
+claude mcp add --transport http server \
+  http://127.0.0.1:2211/mcp</code></pre>
         </div>
       </div>
     </div>

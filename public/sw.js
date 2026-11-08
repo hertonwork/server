@@ -7,7 +7,7 @@
 //             navigations  → network, and the cached shell when the network is away (the app opens offline)
 //             other files  → cache first, refreshed in the background (stale-while-revalidate)
 //   message   'skip' → activate the waiting version now (the page's "Reload" button)
-const VERSION = 'cadb57e4';
+const VERSION = 'c1d047e7';
 const CACHE = 'simple-server-' + VERSION;
 const PRECACHE = ["/index.html","/404.html","/manifest.webmanifest","/favicon.ico","/apple-touch-icon.png","/android-chrome-192x192.png","/android-chrome-512x512.png","/icon-maskable-512.png"];
 const SHELL = '/index.html';

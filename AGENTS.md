@@ -1,0 +1,68 @@
+# Working in this repository (for agents and people)
+
+simple-server is a static web server for a single-page app in one Node file, plus the page it serves. No npm
+dependencies anywhere — not for running, not for building, not for testing. `npm start` serves, `npm run check`
+verifies everything.
+
+## Layout
+
+| Path | What | Edit? |
+|---|---|---|
+| `lib/simple-server.js` | the server: `createHandler(options)` and `createServer(options)`. Path safety, MIME, caching, ETags, compression, ranges, SPA fallback, routes, errors. Options and defaults at the top | yes — add a test in the same change |
+| `server.js` | the entry point: reads `PORT`, `HOST`, `PUBLIC_DIR`, `VERBOSE`, `TLS_KEY`/`TLS_CERT`, starts the server, shuts down cleanly | yes |
+| `test/server.test.mjs` | `node:test` over a real socket against a temporary `public/`; raw `http` where `fetch()` would hide something (compression, odd URLs) | yes |
+| `public/` | what is served. `index.html`, `404.html` and `sw.js` are **built** from `site/`; everything else (manifest, icons, screenshots, robots) is a plain asset | built files: no — `npm run build`. Assets: yes |
+| `site/index.html`, `site/404.html` | the page templates: sscss classes, Minim bindings, the state JSON, two slots at the end of the body (`<!--minim-->`, `<!--app-->`) | yes |
+| `site/app.js` | the page's own script: the request inspector, the `/api/health` poll, the PWA plumbing (install, update prompt, offline) | yes |
+| `site/sw.js` | the service worker template; the build fills `__VERSION__` (a hash of every precached file) and `__PRECACHE__` | yes |
+| `scripts/build.mjs` | `site/` → `public/`: inlines Minim and `app.js`, generates the sscss block for each page, versions the service worker | yes |
+| `scripts/check.mjs` | the whole verification: tests, build (fails in CI when `public/` is stale), preflight, Lighthouse against this server | yes |
+| `scripts/vendor.mjs`, `vendor/` | the three vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker). Refresh with `npm run vendor` | vendored files: no, refresh them |
+| `scripts/shots.mjs` | manifest screenshots and the README preview, from this server (needs Playwright; dev-only) | yes |
+| `skills/simple-server/` | the agent skill: how to use this server for a project and how to build and verify a page the way this one was | yes |
+
+## Commands
+
+```sh
+npm start               # serve public/ at http://127.0.0.1:2211
+npm run dev             # same, verbose, restarts when a file changes
+npm test                # the server's tests (node:test)
+npm run build           # site/ → public/ (index.html, 404.html, sw.js)
+npm run check           # tests + build + preflight + Lighthouse (if `lighthouse` is on PATH; CHROME_PATH if Chrome isn't found)
+npm run check -- --no-lighthouse
+npm run cert            # self-signed localhost pair → the next `npm start` is https
+npm run vendor          # refresh vendor/ from the Minim and sscss repositories
+```
+
+## Rules that keep this project what it is
+
+- **Zero dependencies, everywhere.** `package.json` has no `dependencies` and no `devDependencies`. The build is
+  three vendored files; the tests are `node:test`; Lighthouse and Playwright are optional tools found on the machine,
+  never installed by this repository. A change that needs a package needs a different approach.
+- **Nothing outside `public/` is ever served.** Every path goes through `resolve()` in `lib/simple-server.js`, and the
+  traversal test lists the ways people try. A new way of naming a file (a new decoding, a new separator) gets a case
+  there before it gets a fix.
+- **The server never crashes on input.** A malformed URL is a 400, a missing file a 404, an unexpected error a 500 —
+  logged when `VERBOSE`, never thrown out of the handler. The vanishing-file test exists for this.
+- **The page is one file, 100/100/100/100, and the build keeps it so.** No external JS, CSS or fonts; initial state
+  pre-rendered in the markup; Minim inlined at the end of the body; entrance motion is transform-only. The page's
+  classes are [sscss](https://github.com/hertonwork/sscss) — `scripts/build.mjs` generates exactly the rules used and
+  **fails on a class that is neither sscss nor styled in the page's own `<style>`**. Keep that `<style>` short.
+- **Build before you judge, commit what you built.** Tests and Lighthouse run on `public/`; `npm run check` fails in
+  CI when `public/` doesn't match `site/`. Edit `site/`, run `npm run build`, commit both.
+- **Caching is by type, not by file.** HTML, `sw.js` and the manifest are `no-cache` so deploys show up at once;
+  fingerprinted assets (`name.3f9c2a1b.ext`) are immutable for a year; everything else a day. Don't add per-file rules.
+- **Lighthouse measures the real server**, not a file: compression, caching headers and the service worker all count.
+  Run it with `npm run check`; the mobile and desktop presets must both be 100 in every category.
+- **Design as a decision.** Large type in the system font, sections that each have their own composition, surfaces
+  separated by a tone step, no gradients, hairlines or emoji in content, one accent action per screen. The rules are
+  `references/design.md` in the Minim page skill; the page follows them.
+- Commits are plain; PRs explain what changed and why in the body.
+
+## Using this server for your own app
+
+Replace `public/` with your build (keep `404.html` if you want a styled not-found page) and `npm start`. For a page in
+the same style as the bundled one — sscss classes, Minim bindings, a generated stylesheet, Lighthouse 100 — use the
+skill in `skills/simple-server/` (`npx skills add hertonwork/simple-server`), which hands off to the
+[minim-page](https://github.com/hertonwork/minim/tree/main/skills/minim-page) and
+[sscss](https://github.com/hertonwork/sscss/tree/main/skills/sscss) skills for the page itself.

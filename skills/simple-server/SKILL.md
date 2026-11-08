@@ -132,5 +132,12 @@ the server's, not Pages'). The server itself runs wherever `npm start` runs.
   answers them correctly (a real file, or a 404 page with a 404 status), which is one more reason to measure against it.
 - **Service-worker requests during the audit** are cheap but real: precache a handful of small files, register after
   load, and keep the page's own polling at ≥ 10 s so the network goes quiet.
+- **`hidden` lost to a display utility.** Minim's `data-show` toggles the `hidden` attribute, but `class="f …"` sets
+  `display:flex`, which beats the browser's `[hidden]` rule, so the "new version is ready" banner showed on every visit.
+  The page's own style has `[hidden] { display: none !important }`; keep it in any page that combines the two.
+- **A static host answers differently.** On GitHub Pages `/about` is a 404 (no SPA fallback), `/api/health` doesn't
+  exist and an encoded slash (`%2f`) is a 400. The page detects it (no `/api/health`) and shows, under each answer,
+  what `npm start` answers (`data-expect` on the options); the field section measures the visitor's own page load,
+  which is true on any host, and shows process stats only when there is a process.
 - **Lower-casing URLs** (v1) made `Upper.TXT` unreachable on Linux; **`max-age=31536000` on HTML** (v1) hid every
   deploy from returning visitors. Type-based caching and case-sensitive paths are the fix, not per-file rules.

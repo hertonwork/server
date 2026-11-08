@@ -6,15 +6,15 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
-  <title>simple-server — a static server for a single-page app, in one Node file</title>
+  <title>server — a static server for a single-page app, in one Node file</title>
   <meta name="description" content="A zero-dependency Node web server for a single-page app: safe paths, brotli, caching, SPA fallback, PWA. Run npm start and you're serving. 100/100 Lighthouse out of the box.">
   <link rel="canonical" href="https://server.herton.work/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="simple-server">
-  <meta property="og:title" content="simple-server — one file, zero dependencies, 100/100 Lighthouse">
+  <meta property="og:site_name" content="server">
+  <meta property="og:title" content="server — one file, zero dependencies, 100/100 Lighthouse">
   <meta property="og:description" content="A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA. Nothing to install.">
   <meta property="og:url" content="https://server.herton.work/">
   <meta property="og:image" content="https://server.herton.work/preview.jpg">
@@ -28,6 +28,8 @@
        the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
   <style>
     html { scroll-behavior: smooth; }
+    /* Minim's data-show toggles `hidden`; a display utility (f, bk, ib…) would otherwise win over the browser's [hidden] rule */
+    [hidden] { display: none !important; }
     body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-underline-offset: .15em; }
     h1, h2 { margin: 0; letter-spacing: -0.025em; line-height: 1.02; text-wrap: balance; }
@@ -68,8 +70,10 @@
     {
       "path": "/",
       "status": "200", "statusText": "OK", "ms": "–", "busy": false,
-      "h": { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache", "content-encoding": "br", "vary": "Accept-Encoding", "etag": "W/\"…\"", "content-length": "", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "allow": "", "location": "" },
-      "requests": "0", "started": "it started", "uptime": "0s", "node": "–", "live": "connecting", "static": false,
+      "h": { "server": "", "content-type": "text/html; charset=utf-8", "cache-control": "no-cache", "content-encoding": "br", "vary": "Accept-Encoding", "etag": "W/\"…\"", "content-length": "", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "allow": "", "location": "" },
+      "expect": "200, the app shell", "static": false,
+      "kb": "–", "raw": "–", "saved": "–", "assets": "0", "fcp": "–", "proto": "–", "viaSw": false,
+      "proc": false, "requests": "–", "uptime": "–", "node": "–",
       "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
     }
   </script>
@@ -77,7 +81,7 @@
 <body>
 
 <header class="wrap mx f ac g4 py4">
-  <a href="/" class="t4 b tt nu x">simple-server</a>
+  <a href="/" class="t4 b tt nu x">server</a>
   <nav class="f ac g4 md nw" aria-label="Site">
     <a href="#does" class="nu hd m-ib">What it does</a>
     <a href="#pwa" class="nu hd m-ib">PWA</a>
@@ -101,24 +105,26 @@ npm start
       </div>
       <div class="r2 bs p6 an-rise">
         <p class="t4 b mb4">Ask this server something</p>
-        <p class="t1 mb4" data-show="static" hidden>This copy is on GitHub Pages, so the answers below are GitHub's. Clone it and <code>npm start</code> to ask simple-server itself.</p>
+        <p class="t1 mb4" data-show="static" hidden>This copy is on a static host, so the answers below are the host's. Under each one: what this server answers when you run it with <code>npm start</code>.</p>
         <label>Request
           <select data-model="path" id="path">
-            <option value="/">GET / — the app shell</option>
-            <option value="/about">GET /about — a client-side route</option>
-            <option value="/api/health">GET /api/health — JSON route</option>
-            <option value="/manifest.webmanifest">GET /manifest.webmanifest</option>
-            <option value="/android-chrome-192x192.png">GET /android-chrome-192x192.png</option>
-            <option value="/sw.js">GET /sw.js — the service worker</option>
-            <option value="/missing.png">GET /missing.png — not there</option>
-            <option value="/api/nothing">GET /api/nothing — unknown route</option>
-            <option value="/..%2f..%2fpackage.json">GET /..%2f..%2fpackage.json — traversal</option>
+            <option value="/" data-expect="200, the app shell">GET / — the app shell</option>
+            <option value="/about" data-expect="200, the app shell (SPA fallback)">GET /about — a client-side route</option>
+            <option value="/api/health" data-expect="200, JSON from the process">GET /api/health — JSON route</option>
+            <option value="/manifest.webmanifest" data-expect="200, application/manifest+json, no-cache">GET /manifest.webmanifest</option>
+            <option value="/android-chrome-192x192.png" data-expect="200, image/png, cached a day">GET /android-chrome-192x192.png</option>
+            <option value="/sw.js" data-expect="200, no-cache, so updates show at once">GET /sw.js — the service worker</option>
+            <option value="/missing.png" data-expect="404, the not-found page">GET /missing.png — not there</option>
+            <option value="/api/nothing" data-expect="404, never the app shell">GET /api/nothing — unknown route</option>
+            <option value="/..%2f..%2fpackage.json" data-expect="404, the path stays inside public/">GET /..%2f..%2fpackage.json — traversal</option>
           </select>
         </label>
         <p class="f ac g3 mt4"><button type="button" id="send" class="r bs2 ci px4 py2 an-fx btn" data-class="an-spin:busy">Send</button> <span class="t1 cm tn"><b data-watch="ms">–</b> ms</span></p>
         <div class="answer">
           <p class="t5 b tn mt4"><span data-watch="status">200</span> <span class="t3 md" data-watch="statusText">OK</span></p>
+          <p class="t1 mt1" data-show="static" hidden>With <code>npm start</code>: <b data-watch="expect">200, the app shell</b></p>
           <dl class="mt3 sy1 t1 mono">
+            <div class="f fw g2" data-show="h.server" hidden><dt class="cm fs0">server</dt><dd data-watch="h.server"></dd></div>
             <div class="f fw g2" data-show="h.content-type"><dt class="cm fs0">content-type</dt><dd data-watch="h.content-type">text/html; charset=utf-8</dd></div>
             <div class="f fw g2" data-show="h.cache-control"><dt class="cm fs0">cache-control</dt><dd data-watch="h.cache-control">no-cache</dd></div>
             <div class="f fw g2" data-show="h.content-encoding"><dt class="cm fs0">content-encoding</dt><dd data-watch="h.content-encoding">br</dd></div>
@@ -158,16 +164,23 @@ npm start
 
   <section class="field" id="status">
     <div class="wrap mx">
-      <h2>Live, from this process.</h2>
-      <p class="t3 mt3">The page asks <code>/api/health</code> every ten seconds; Minim renders the answer.</p>
-      <p class="big b tn mt7"><span data-watch="requests">0</span></p>
-      <p class="t3 mt2">requests served since <span data-watch="started">it started</span></p>
-      <p class="t3 mt2" data-show="static" hidden>This copy is on a static host, so there is no process to ask. Run it locally to see it count.</p>
+      <h2>Measured in your browser.</h2>
+      <p class="t3 mt3">Not a claim: this page load, read from the Performance API and rendered by Minim. It holds on any host.</p>
+      <p class="big b tn mt7"><span data-watch="kb">–</span> KB</p>
+      <p class="t3 mt2">over the wire for the whole page: <span data-watch="raw">–</span> KB of HTML, <span data-watch="saved">–</span> smaller compressed<span data-show="viaSw" hidden> (the service worker answered this visit, so these sizes are from a fresh request)</span>.</p>
       <dl class="f fw g7 mt7">
-        <div><dt class="t1">Uptime</dt><dd class="t4 sb tn" data-watch="uptime">0s</dd></div>
-        <div><dt class="t1">Node</dt><dd class="t4 sb" data-watch="node">–</dd></div>
-        <div><dt class="t1">Server</dt><dd class="t4 sb" data-watch="live">connecting</dd></div>
+        <div><dt class="t1">JS, CSS and font requests</dt><dd class="t4 sb tn" data-watch="assets">0</dd></div>
+        <div><dt class="t1">First paint</dt><dd class="t4 sb tn" data-watch="fcp">–</dd></div>
+        <div><dt class="t1">Protocol</dt><dd class="t4 sb" data-watch="proto">–</dd></div>
       </dl>
+      <div data-show="proc" hidden>
+        <p class="t3 mt8">And from the process serving it, via <code>/api/health</code> every ten seconds:</p>
+        <dl class="f fw g7 mt5">
+          <div><dt class="t1">Requests served</dt><dd class="t4 sb tn" data-watch="requests">–</dd></div>
+          <div><dt class="t1">Uptime</dt><dd class="t4 sb tn" data-watch="uptime">–</dd></div>
+          <div><dt class="t1">Node</dt><dd class="t4 sb" data-watch="node">–</dd></div>
+        </dl>
+      </div>
     </div>
   </section>
 

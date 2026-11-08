@@ -112,7 +112,10 @@ classes; the build generates exactly the rules the page uses, 2.5 KB) and [Minim
 * a **request inspector** — pick a path, the page fetches it from this server and shows the status and the headers
   that matter (type, caching, encoding, ETag), including what a traversal attempt gets;
 * a **live status panel** — `/api/health` every ten seconds: requests served, uptime, Node version;
-* the **PWA state** — service worker, cache version, network, install and update buttons.
+* the **PWA state** — service worker, cache version, network, install and update buttons;
+* a **hero animation** — lanes running to a horizon, requests flowing in and responses coming back, drawn by a
+  fragment shader from Minim's [shader-hero](https://github.com/hertonwork/minim/tree/main/skills/shader-hero) skill.
+  It runs only on real GPUs and starts after the page has loaded, so the score doesn't move.
 
 ```sh
 npm run build        # site/ → public/index.html, public/404.html, public/sw.js

@@ -167,6 +167,11 @@ export const variants = {
   l: { wrap: (rules) => `@media(min-width:1024px){${rules}}`, doc: 'at ≥ 1024px' },
 };
 
+/** A utility that sets a visible display (f, fc, gr, bk, ib) outranks the browser's own [hidden]{display:none}, so an
+ *  element with both stays visible — Minim's data-show toggles `hidden`, and a hidden flex row would show anyway. Every
+ *  page that uses such a utility gets this once; pages that don't, and the core, pay nothing. */
+export const hiddenWins = '[hidden]{display:none!important}';
+
 const esc = (c) => c.replace(/[^a-zA-Z0-9_-]/g, (ch) => '\\' + ch);
 /** The CSS rule for one class name (with or without a variant prefix), or null if not in the vocabulary. */
 export function ruleFor(cls) {
@@ -175,13 +180,13 @@ export function ruleFor(cls) {
   if (!decl) return null;
   let sel = '.' + esc(cls);
   if (m && m[1] === 'h') sel += ':hover';
-  const global = typeof decl === 'object' ? [reduced, decl.global].filter(Boolean) : [];
+  const global = typeof decl === 'object' ? [reduced, decl.global].filter(Boolean) : /display:(?!none)/.test(decl) ? [hiddenWins] : [];
   // decl forms: 'a:b' → .x{a:b} · '>*{…}' → .x>*{…} · '{…}&…' → .x{…} with & standing for .x
   const rule = typeof decl === 'object' ? decl.css(sel) : decl[0] === '>' ? sel + decl : decl[0] === '{' ? sel + decl.replaceAll('&', sel) : `${sel}{${decl}}`;
   return { rule, variant: m && m[1] !== 'h' ? m[1] : null, global };
 }
 
-/** CSS for a set of class names: core + their rules, media queries grouped, motion globals once. */
+/** CSS for a set of class names: core + their rules, media queries grouped, globals (motion, [hidden]) once. */
 export function cssFor(classes, { withCore = true } = {}) {
   const base = [], media = { m: [], l: [] }, unknown = [], globals = new Set();
   for (const c of [...new Set(classes)].sort()) {

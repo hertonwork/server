@@ -6,6 +6,8 @@
 //   vendor/minim.min.js              Minim (inlined at <script><!--minim--></script>)
 //   vendor/sscss.mjs                 generates exactly the CSS each page uses → <style data-sscss> before </head>
 //   site/sw.js                       service worker template → public/sw.js with VERSION and PRECACHE filled in
+//   vendor/shader-hero/              the hero's animation: the shader-hero harness + the traffic scene, assembled the way
+//                                    the skill's inline.mjs does it → <script><!--shader--></script>
 //
 // No dependencies: the two vendored files are the whole toolchain (`npm run vendor` refreshes them from GitHub).
 import { readFile, writeFile, stat } from 'node:fs/promises';
@@ -22,7 +24,13 @@ const kb = (s) => `${(Buffer.byteLength(s) / 1024).toFixed(1)} KB`;
 const minim = (await read('vendor', 'minim.min.js')).trim();
 const app = (await read('site', 'app.js'))
   .split('\n').filter((l) => !/^\s*\/\//.test(l)).map((l) => l.replace(/^\s+/, '')).join('\n').trim();   // comments and indent off
-for (const [name, js] of [['minim', minim], ['app', app]]) if (js.includes('</script')) throw new Error(`${name} contains "</script" and cannot be inlined`);
+const scene = await read('vendor', 'shader-hero', 'traffic.js');
+// the hero's animation: the scene goes into the harness at /*SCENE*/null; full-line comments go, newlines stay (the
+// shader source keeps its own trailing // comments, which need their line ends)
+const bare = (src) => src.split('\n').filter((l) => !/^\s*\/\//.test(l)).map((l) => l.replace(/^\s+/, '')).join('\n').trim();
+const shader = bare(await read('vendor', 'shader-hero', 'hero.js'))
+  .replace('/*SCENE*/null', () => bare(scene).replace(/;?\s*$/, ''));
+for (const [name, js] of [['minim', minim], ['app', app], ['shader', shader]]) if (js.includes('</script')) throw new Error(`${name} contains "</script" and cannot be inlined`);
 
 let failed = false;
 
@@ -30,6 +38,7 @@ async function page(name) {
   let html = await read('site', name);
   html = html.replace('<script><!--minim--></script>', () => `<script>${minim}</script>`);
   html = html.replace('<script><!--app--></script>', () => `<script>${app}</script>`);
+  html = html.replace('<script><!--shader--></script>', () => `<script>${shader}</script>`);
 
   // the page's own classes (any <style> that isn't ours) are not unknown
   const own = new Set();
@@ -45,7 +54,7 @@ async function page(name) {
   html = html.slice(0, head) + `  <style data-sscss>${css}</style>\n` + html.slice(head);
 
   await writeFile(at('public', name), html);
-  console.log(`public/${name}  ${kb(html)}  (sscss ${css.length} B, minim ${html.includes(minim) ? kb(minim) : 'not used'})`);
+  console.log(`public/${name}  ${kb(html)}  (sscss ${css.length} B, minim ${html.includes(minim) ? kb(minim) : 'not used'}${html.includes(shader) ? `, hero ${kb(shader)}` : ''})`);
 }
 
 await page('index.html');

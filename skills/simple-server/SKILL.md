@@ -111,6 +111,13 @@ Work in this order:
    `lighthouse` globally; set `CHROME_PATH` if Chrome isn't found). Fix every line it prints. Commit `site/` and
    `public/` together.
 
+### The hero
+
+The animation is Minim's **shader-hero** skill with its `traffic` scene, vendored in `vendor/shader-hero/` and
+assembled by the build into `<script><!--shader--></script>`. The canvas sits first in the hero (`rel oh hero`, content
+`rel`), the band's height is the hero's bottom padding plus a little so its horizon lands just below the content, and
+nothing else depends on it: Lighthouse's GPU-less Chrome never runs it. Open the page with `#traffic` to force it on.
+
 ### The PWA
 
 - `public/manifest.webmanifest`: `id`, `start_url`, `scope`, `display: standalone`, a 192 and a 512 icon plus a

@@ -1,0 +1,42 @@
+name: Pages
+
+# Publishes public/ to GitHub Pages (server.herton.work) on every push to main.
+# Pages is a static host: the page shows its "static host" notes there; the server itself runs wherever `npm start` runs.
+# One-time setup in the repository: Settings → Pages → Source: "GitHub Actions" (configure-pages tries to do it for you).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run build
+      - name: public/ matches site/
+        run: git diff --exit-code -- public
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - id: deployment
+        uses: actions/deploy-pages@v4

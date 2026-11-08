@@ -6,7 +6,7 @@ description: >-
   /api/health) and ship it as an installable PWA with a versioned service worker, all scoring 100/100/100/100 on
   Lighthouse. Use this whenever someone needs to serve a built SPA or static folder with Node and nothing to install,
   wants a static server "without express", needs SPA fallback / history-mode routing on a plain server, wants a service
-  worker with precache, offline shell and an update prompt, or is working inside the hertonwork/simple-server
+  worker with precache, offline shell and an update prompt, or is working inside the hertonwork/server
   repository. Pairs with the minim-page and sscss skills for the page itself.
 ---
 
@@ -20,7 +20,7 @@ shell a project replaces.
 ## 1. Serve a project
 
 ```sh
-git clone https://github.com/hertonwork/simple-server.git my-app && cd my-app
+git clone https://github.com/hertonwork/server.git my-app && cd my-app
 rm -rf public/* && cp -r ../dist/* public/      # your build; keep a 404.html if you want a styled not-found page
 npm start                                        # http://127.0.0.1:2211
 ```
@@ -103,6 +103,13 @@ Work in this order:
   is waiting → show the prompt; the Reload button posts `'skip'` and reloads on `controllerchange` **only then** (the
   first install also changes the controller — don't reload on it). `beforeinstallprompt` → an Install button.
 - The server sends `sw.js` and the manifest with `no-cache`, so a deploy is seen on the next visit, not a day later.
+
+### Publishing the page
+
+`.github/workflows/pages.yml` uploads `public/` to GitHub Pages on every push to `main` (Settings → Pages → Source
+"GitHub Actions"; the custom domain is set there too). Pages is a static host: `/api/*` is a 404 there, the page shows
+its static-host notes, and `404.html` is served for unknown paths (including client-side routes — the SPA fallback is
+the server's, not Pages'). The server itself runs wherever `npm start` runs.
 
 ## 3. Checklist before a PR
 

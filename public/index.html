@@ -68,14 +68,7 @@
     {
       "path": "/",
       "status": "200", "statusText": "OK", "ms": "–", "busy": false,
-      "headers": [
-        { "name": "content-type", "value": "text/html; charset=utf-8" },
-        { "name": "cache-control", "value": "no-cache" },
-        { "name": "content-encoding", "value": "br" },
-        { "name": "vary", "value": "Accept-Encoding" },
-        { "name": "etag", "value": "W/\"…\"" },
-        { "name": "x-content-type-options", "value": "nosniff" }
-      ],
+      "h": { "content-type": "text/html; charset=utf-8", "cache-control": "no-cache", "content-encoding": "br", "vary": "Accept-Encoding", "etag": "W/\"…\"", "content-length": "", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "allow": "", "location": "" },
       "requests": "0", "started": "it started", "uptime": "0s", "node": "–", "live": "connecting", "static": false,
       "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
     }
@@ -127,9 +120,16 @@ npm start
         <div class="answer">
           <p class="t5 b tn mt4"><span data-watch="status">200</span> <span class="t3 md" data-watch="statusText">OK</span></p>
           <dl class="mt3 sy1 t1 mono">
-            <template data-each="headers">
-              <div class="f fw g2 an-in"><dt class="cm fs0" data-watch="$.name"></dt><dd data-watch="$.value"></dd></div>
-            </template>
+            <div class="f fw g2" data-show="h.content-type"><dt class="cm fs0">content-type</dt><dd data-watch="h.content-type">text/html; charset=utf-8</dd></div>
+            <div class="f fw g2" data-show="h.cache-control"><dt class="cm fs0">cache-control</dt><dd data-watch="h.cache-control">no-cache</dd></div>
+            <div class="f fw g2" data-show="h.content-encoding"><dt class="cm fs0">content-encoding</dt><dd data-watch="h.content-encoding">br</dd></div>
+            <div class="f fw g2" data-show="h.vary"><dt class="cm fs0">vary</dt><dd data-watch="h.vary">Accept-Encoding</dd></div>
+            <div class="f fw g2" data-show="h.etag"><dt class="cm fs0">etag</dt><dd data-watch="h.etag">W/&quot;…&quot;</dd></div>
+            <div class="f fw g2" data-show="h.content-length" hidden><dt class="cm fs0">content-length</dt><dd data-watch="h.content-length"></dd></div>
+            <div class="f fw g2" data-show="h.x-content-type-options"><dt class="cm fs0">x-content-type-options</dt><dd data-watch="h.x-content-type-options">nosniff</dd></div>
+            <div class="f fw g2" data-show="h.x-frame-options"><dt class="cm fs0">x-frame-options</dt><dd data-watch="h.x-frame-options">SAMEORIGIN</dd></div>
+            <div class="f fw g2" data-show="h.allow" hidden><dt class="cm fs0">allow</dt><dd data-watch="h.allow"></dd></div>
+            <div class="f fw g2" data-show="h.location" hidden><dt class="cm fs0">location</dt><dd data-watch="h.location"></dd></div>
           </dl>
         </div>
       </div>
@@ -241,9 +241,10 @@ const r = await fetch(app.path, { headers: { ...probe, Accept: 'text/html,*/*' }
 await r.arrayBuffer();
 app.status = String(r.status || 0);
 app.statusText = r.status ? r.statusText || status(r.status) : r.type === 'opaqueredirect' ? 'redirect' : '';
-app.headers = shown.filter((h) => r.headers.has(h)).map((h) => ({ name: h, value: r.headers.get(h) }));
+for (const h of shown) app.h[h] = r.headers.get(h) || '';
 } catch {
-app.status = '0'; app.statusText = 'network error'; app.headers = [];
+app.status = '0'; app.statusText = 'network error';
+for (const h of shown) app.h[h] = '';
 }
 app.ms = String(Math.round(performance.now() - t0));
 app.busy = false;

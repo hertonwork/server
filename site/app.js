@@ -16,9 +16,10 @@
       await r.arrayBuffer();
       app.status = String(r.status || 0);
       app.statusText = r.status ? r.statusText || status(r.status) : r.type === 'opaqueredirect' ? 'redirect' : '';
-      app.headers = shown.filter((h) => r.headers.has(h)).map((h) => ({ name: h, value: r.headers.get(h) }));
+      for (const h of shown) app.h[h] = r.headers.get(h) || '';
     } catch {
-      app.status = '0'; app.statusText = 'network error'; app.headers = [];
+      app.status = '0'; app.statusText = 'network error';
+      for (const h of shown) app.h[h] = '';
     }
     app.ms = String(Math.round(performance.now() - t0));
     app.busy = false;

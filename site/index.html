@@ -60,8 +60,13 @@
     label { display: block; font-weight: 600; }
     select { display: block; width: 100%; margin-top: .3rem; font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--sf2); border-radius: var(--r); padding: .55rem .75rem; }
     select:focus { border-color: var(--acc); outline: none; }
-    .answer { min-height: 13.5rem; }
+    .answer { min-height: 17.5rem; }
+    .notes { display: grid; }
+    .notes > * { grid-area: 1 / 1; }
+    .off { visibility: hidden; }
     .answer dt { min-width: 12ch; }
+    /* one line per header, so the panel's height can't change when real values (a long ETag) replace the first paint's */
+    .answer dd { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   </style>
 
   <!-- State: every value the page shows, with the value it is first painted with. The script at the end of the body
@@ -72,6 +77,7 @@
       "status": "200", "statusText": "OK", "ms": "–", "busy": false,
       "h": { "server": "", "content-type": "text/html; charset=utf-8", "cache-control": "no-cache", "content-encoding": "br", "vary": "Accept-Encoding", "etag": "W/\"…\"", "content-length": "", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "allow": "", "location": "" },
       "expect": "200, the app shell", "static": false,
+      "live": true,
       "kb": "–", "raw": "–", "saved": "–", "assets": "0", "fcp": "–", "proto": "–", "viaSw": false,
       "proc": false, "requests": "–", "uptime": "–", "node": "–",
       "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
@@ -105,7 +111,9 @@ npm start
       </div>
       <div class="r2 bs p6 an-rise">
         <p class="t4 b mb4">Ask this server something</p>
-        <p class="t1 mb4" data-show="static" hidden>This copy is on a static host, so the answers below are the host's. Under each one: what this server answers when you run it with <code>npm start</code>.</p>
+        <!-- both notes share one grid cell and only their visibility toggles, so the cell is always as tall as the longer
+             one: a note that appeared after load would push the page down -->
+        <p class="t1 mb4 notes"><span data-class="off:static">Each answer comes live from the server hosting this page. The line under the status is what simple-server answers, so here the two should agree.</span><span class="off" data-class="off:live">This copy is on a static host, so the answers below are the host's. The line under the status is what simple-server answers when you run npm start.</span></p>
         <label>Request
           <select data-model="path" id="path">
             <option value="/" data-expect="200, the app shell">GET / — the app shell</option>
@@ -122,19 +130,19 @@ npm start
         <p class="f ac g3 mt4"><button type="button" id="send" class="r bs2 ci px4 py2 an-fx btn" data-class="an-spin:busy">Send</button> <span class="t1 cm tn"><b data-watch="ms">–</b> ms</span></p>
         <div class="answer">
           <p class="t5 b tn mt4"><span data-watch="status">200</span> <span class="t3 md" data-watch="statusText">OK</span></p>
-          <p class="t1 mt1" data-show="static" hidden>With <code>npm start</code>: <b data-watch="expect">200, the app shell</b></p>
+          <p class="t1 mt1">With <code>npm start</code>: <b data-watch="expect">200, the app shell</b></p>
           <dl class="mt3 sy1 t1 mono">
-            <div class="f fw g2" data-show="h.server" hidden><dt class="cm fs0">server</dt><dd data-watch="h.server"></dd></div>
-            <div class="f fw g2" data-show="h.content-type"><dt class="cm fs0">content-type</dt><dd data-watch="h.content-type">text/html; charset=utf-8</dd></div>
-            <div class="f fw g2" data-show="h.cache-control"><dt class="cm fs0">cache-control</dt><dd data-watch="h.cache-control">no-cache</dd></div>
-            <div class="f fw g2" data-show="h.content-encoding"><dt class="cm fs0">content-encoding</dt><dd data-watch="h.content-encoding">br</dd></div>
-            <div class="f fw g2" data-show="h.vary"><dt class="cm fs0">vary</dt><dd data-watch="h.vary">Accept-Encoding</dd></div>
-            <div class="f fw g2" data-show="h.etag"><dt class="cm fs0">etag</dt><dd data-watch="h.etag">W/&quot;…&quot;</dd></div>
-            <div class="f fw g2" data-show="h.content-length" hidden><dt class="cm fs0">content-length</dt><dd data-watch="h.content-length"></dd></div>
-            <div class="f fw g2" data-show="h.x-content-type-options"><dt class="cm fs0">x-content-type-options</dt><dd data-watch="h.x-content-type-options">nosniff</dd></div>
-            <div class="f fw g2" data-show="h.x-frame-options"><dt class="cm fs0">x-frame-options</dt><dd data-watch="h.x-frame-options">SAMEORIGIN</dd></div>
-            <div class="f fw g2" data-show="h.allow" hidden><dt class="cm fs0">allow</dt><dd data-watch="h.allow"></dd></div>
-            <div class="f fw g2" data-show="h.location" hidden><dt class="cm fs0">location</dt><dd data-watch="h.location"></dd></div>
+            <div class="f g2" data-show="h.content-type"><dt class="cm fs0">content-type</dt><dd data-watch="h.content-type" data-bind="title:h.content-type">text/html; charset=utf-8</dd></div>
+            <div class="f g2" data-show="h.cache-control"><dt class="cm fs0">cache-control</dt><dd data-watch="h.cache-control" data-bind="title:h.cache-control">no-cache</dd></div>
+            <div class="f g2" data-show="h.content-encoding"><dt class="cm fs0">content-encoding</dt><dd data-watch="h.content-encoding" data-bind="title:h.content-encoding">br</dd></div>
+            <div class="f g2" data-show="h.vary"><dt class="cm fs0">vary</dt><dd data-watch="h.vary" data-bind="title:h.vary">Accept-Encoding</dd></div>
+            <div class="f g2" data-show="h.etag"><dt class="cm fs0">etag</dt><dd data-watch="h.etag" data-bind="title:h.etag">W/&quot;…&quot;</dd></div>
+            <div class="f g2" data-show="h.content-length" hidden><dt class="cm fs0">content-length</dt><dd data-watch="h.content-length" data-bind="title:h.content-length"></dd></div>
+            <div class="f g2" data-show="h.x-content-type-options"><dt class="cm fs0">x-content-type-options</dt><dd data-watch="h.x-content-type-options" data-bind="title:h.x-content-type-options">nosniff</dd></div>
+            <div class="f g2" data-show="h.x-frame-options"><dt class="cm fs0">x-frame-options</dt><dd data-watch="h.x-frame-options" data-bind="title:h.x-frame-options">SAMEORIGIN</dd></div>
+            <div class="f g2" data-show="h.allow" hidden><dt class="cm fs0">allow</dt><dd data-watch="h.allow" data-bind="title:h.allow"></dd></div>
+            <div class="f g2" data-show="h.location" hidden><dt class="cm fs0">location</dt><dd data-watch="h.location" data-bind="title:h.location"></dd></div>
+            <div class="f g2" data-show="h.server" hidden><dt class="cm fs0">server</dt><dd data-watch="h.server" data-bind="title:h.server"></dd></div>
           </dl>
         </div>
       </div>

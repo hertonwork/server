@@ -42,6 +42,11 @@ if (!process.argv.includes('--no-lighthouse')) {
   const server = createServer({ publicDir: path.join(root, 'public') });
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
   const url = `http://127.0.0.1:${server.address().port}/`;
+  // Chrome's first launch on a fresh machine (a CI runner) builds its font cache and profile during the first page's
+  // layout — on one run that was 1.4 s of blocking time on a page that measures 0 the moment after. Load the page once
+  // with the cheapest category before anything is measured, so the audits see Chrome, not its first start.
+  const warm = await run('lighthouse', [url, '--only-categories=seo', '--quiet', '--output=json', '--output-path=/tmp/simple-server-lh-warmup.json', '--chrome-flags=--headless=new --no-sandbox --disable-gpu'], { stdio: ['ignore', 'ignore', 'ignore'] });
+  if (warm.error) console.log(warm.error.code === 'ENOENT' ? 'lighthouse is not installed (npm i -g lighthouse) — skipped' : `lighthouse: ${warm.error.message}`);
   const perfMin = Number(process.env.LH_PERF_MIN) || 100;   // shared CI runners are noisy by a point or two; locally it is 100
   const audit = async (preset, multiplier) => {
     const out = `/tmp/simple-server-lh-${preset}.json`;
@@ -56,7 +61,7 @@ if (!process.argv.includes('--no-lighthouse')) {
     const failing = Object.entries(a).filter(([, au]) => au.score !== null && au.score < 1 && au.scoreDisplayMode === 'binary').map(([id, au]) => `   !  ${id}: ${au.title}`);
     return { scores, line, failing, benchmarkIndex: rep.environment.benchmarkIndex };
   };
-  for (const preset of ['mobile', 'desktop']) {
+  for (const preset of warm.error ? [] : ['mobile', 'desktop']) {
     let r = await audit(preset);
     if (r.error) { console.log(r.error.code === 'ENOENT' ? 'lighthouse is not installed (npm i -g lighthouse) — skipped' : `lighthouse: ${r.error.message}`); break; }
     console.log(r.line); r.failing.forEach((f) => console.log(f));

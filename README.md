@@ -1,4 +1,4 @@
-# simple-server
+# server
 
 A static web server for a single-page app, in one Node file, with nothing to install.
 

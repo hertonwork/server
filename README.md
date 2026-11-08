@@ -106,7 +106,7 @@ adds the [MCP](#mcp) endpoint. All options and their defaults are at the top of
 
 `public/index.html` is the server's demo and the shell your app replaces: one HTML file with no request for JS, CSS or
 fonts. It is built from `site/` with [sscss](https://github.com/hertonwork/sscss) (a vocabulary of tiny utility
-classes; the build generates exactly the rules the page uses, 2.5 KB) and [Minim](https://github.com/hertonwork/minim)
+classes; the build generates exactly the rules the page uses, 2.5 KB) and [minim](https://github.com/hertonwork/minim)
 (a 2.5 KB reactive library; the state is a JSON tag, the markup binds to it by key). On it:
 
 * a **request inspector** — pick a path, the page fetches it from this server and shows the status and the headers
@@ -114,13 +114,13 @@ classes; the build generates exactly the rules the page uses, 2.5 KB) and [Minim
 * a **live status panel** — `/api/health` every ten seconds: requests served, uptime, Node version;
 * the **PWA state** — service worker, cache version, network, install and update buttons;
 * a **hero animation** — lanes running to a horizon, requests flowing in and responses coming back, drawn by a
-  fragment shader from Minim's [shader-hero](https://github.com/hertonwork/minim/tree/main/skills/shader-hero) skill.
+  fragment shader from minim's [shader-hero](https://github.com/hertonwork/minim/tree/main/skills/shader-hero) skill.
   It runs only on real GPUs and starts after the page has loaded, so the score doesn't move.
 
 ```sh
 npm run build        # site/ → public/index.html, public/404.html, public/sw.js
 npm run check        # + preflight + Lighthouse (npm i -g lighthouse; CHROME_PATH if Chrome isn't found)
-npm run vendor       # refresh vendor/ (Minim, the sscss generator, the preflight) from their repositories
+npm run vendor       # refresh vendor/ (minim, the sscss generator, the preflight) from their repositories
 npm run shots        # manifest screenshots + preview.jpg from the running server (Playwright)
 npm run fireworks    # the Lighthouse report's fireworks as public/lighthouse.gif (Playwright + ImageMagick)
 ```

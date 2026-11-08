@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Refresh the vendored toolchain from its upstream repositories.   node scripts/vendor.mjs
-// These files are the whole build: Minim (the page's reactivity), the sscss generator (the page's CSS), the Minim
+// These files are the whole build: minim (the page's reactivity), the sscss generator (the page's CSS), the minim
 // page preflight, and the shader-hero harness with the traffic scene (the hero's animation). They are committed so that building needs no install; run this to pick up a new release.
 import { writeFile } from 'node:fs/promises';
 

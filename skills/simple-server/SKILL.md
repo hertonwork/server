@@ -14,7 +14,7 @@ description: >-
 
 One file serves the app (`lib/simple-server.js`), one file starts it (`server.js`), and `public/` is the app. There is
 nothing to `npm install`: the server, its tests, the page build and the checks are plain Node. The repository ships a
-demo page (sscss + Minim, a request inspector, a live `/api/health` panel, a PWA that updates itself) that is also the
+demo page (sscss + minim, a request inspector, a live `/api/health` panel, a PWA that updates itself) that is also the
 shell a project replaces.
 
 ## 1. Serve a project
@@ -90,20 +90,20 @@ of an MCP server over Streamable HTTP that speaks both protocol eras; copy it as
 ## 2. Build a page for it
 
 The bundled page is the reference. It is built from `site/` by `scripts/build.mjs` with three vendored files in
-`vendor/` — Minim, the sscss generator, the Minim page preflight — so the build has no dependencies either.
+`vendor/` — minim, the sscss generator, the minim page preflight — so the build has no dependencies either.
 
 Work in this order:
 
 1. **State** in `site/index.html`: one JSON object in `<script type="application/json" data-state="app"
    data-root="root">` with every value the page shows, at its first-paint value.
-2. **Markup** with sscss classes and Minim bindings (`data-watch`, `data-show` + `hidden`, `data-model`, `data-each`,
-   `data-class`, `command="--inc"`). Pre-render initial values so nothing moves when Minim binds. Follow the
+2. **Markup** with sscss classes and minim bindings (`data-watch`, `data-show` + `hidden`, `data-model`, `data-each`,
+   `data-class`, `command="--inc"`). Pre-render initial values so nothing moves when minim binds. Follow the
    [minim-page](https://github.com/hertonwork/minim/tree/main/skills/minim-page) skill for the attributes and its
    `references/design.md` for the look; the [sscss](https://github.com/hertonwork/sscss/tree/main/skills/sscss) skill
    for the classes (`node vendor/sscss.mjs --list` prints the cheat sheet).
 3. **Page-own CSS** in the plain `<style>` in the head: type ramps, the `.field` section, inputs, token overrides.
    Short. Any class you invent there is "the page's own"; any other unknown class fails the build.
-4. **Script** in `site/app.js`: a few dozen lines that fetch and write into `app`; Minim renders. Mark requests that
+4. **Script** in `site/app.js`: a few dozen lines that fetch and write into `app`; minim renders. Mark requests that
    must bypass the service worker with an `x-probe` header. Start work after `load`, in `requestIdleCallback`.
 5. `npm run build` → `public/index.html`, `public/404.html`, `public/sw.js` (its `VERSION` is a hash of everything
    precached, so an unchanged deploy leaves installed workers alone).
@@ -113,7 +113,7 @@ Work in this order:
 
 ### The hero
 
-The animation is Minim's **shader-hero** skill with its `traffic` scene, vendored in `vendor/shader-hero/` and
+The animation is minim's **shader-hero** skill with its `traffic` scene, vendored in `vendor/shader-hero/` and
 assembled by the build into `<script><!--shader--></script>`. The canvas sits first in the hero (`rel oh hero`, content
 `rel`), the band's height is the hero's bottom padding plus a little so its horizon lands just below the content, and
 nothing else depends on it: Lighthouse's GPU-less Chrome never runs it. Open the page with `#traffic` to force it on.
@@ -159,7 +159,7 @@ the server's, not Pages'). The server itself runs wherever `npm start` runs.
   answers them correctly (a real file, or a 404 page with a 404 status), which is one more reason to measure against it.
 - **Service-worker requests during the audit** are cheap but real: precache a handful of small files, register after
   load, and keep the page's own polling at ≥ 10 s so the network goes quiet.
-- **`hidden` lost to a display utility.** Minim's `data-show` toggles the `hidden` attribute, but `class="f …"` sets
+- **`hidden` lost to a display utility.** minim's `data-show` toggles the `hidden` attribute, but `class="f …"` sets
   `display:flex`, which beats the browser's `[hidden]` rule, so the "new version is ready" banner showed on every visit.
   The page's own style has `[hidden] { display: none !important }`; keep it in any page that combines the two.
 - **A static host answers differently.** On GitHub Pages `/about` is a 404 (no SPA fallback), `/api/health` doesn't

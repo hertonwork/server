@@ -24,7 +24,7 @@
 
   <!-- This page is the server's demo and the shell your app replaces. It is built from site/ by `npm run build`:
        the classes are sscss (vendor/sscss.mjs generates exactly the rules used into a data-sscss style block at the end
-       of this head), the state below is rendered by Minim (vendor/minim.min.js, inlined at the end of the body), and
+       of this head), the state below is rendered by minim (vendor/minim.min.js, inlined at the end of the body), and
        the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
   <style>
     html { scroll-behavior: smooth; }
@@ -74,7 +74,7 @@
   </style>
 
   <!-- State: every value the page shows, with the value it is first painted with. The script at the end of the body
-       replaces these with live answers from this server; Minim keeps the markup in sync. -->
+       replaces these with live answers from this server; minim keeps the markup in sync. -->
   <script type="application/json" data-state="app" data-root="root">
     {
       "path": "/",
@@ -95,7 +95,7 @@
   <nav class="f ac g4 md nw" aria-label="Site">
     <a href="https://github.com/hertonwork/server" class="nu">GitHub</a>
     <a href="https://www.npmjs.com/package/@labs_kai/server" class="nu">npm</a>
-    <a href="https://minim.herton.work/" class="nu hd m-ib">Minim</a>
+    <a href="https://minim.herton.work/" class="nu hd m-ib">minim</a>
     <a href="https://sscss.herton.work/" class="nu hd m-ib">sscss</a>
     <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="#yours">Run it</a>
   </nav>
@@ -177,7 +177,7 @@
   <section class="field" id="status">
     <div class="wrap mx">
       <h2>Measured in your browser.</h2>
-      <p class="t3 mt3">Not a claim: this page load, read from the Performance API and rendered by Minim. It holds on any host.</p>
+      <p class="t3 mt3">Not a claim: this page load, read from the Performance API and rendered by minim. It holds on any host.</p>
       <p class="big b tn mt7"><span data-watch="kb">–</span> KB</p>
       <p class="t3 mt2">over the wire for the whole page: <span data-watch="raw">–</span> KB of HTML, <span data-watch="saved">–</span> smaller compressed<span data-show="viaSw" hidden> (the service worker answered this visit, so these sizes are from a fresh request)</span>.</p>
       <dl class="f fw g7 mt7">
@@ -250,7 +250,7 @@ claude mcp add --transport http server \
 
 <footer class="wrap mx py8 t1 cm f fw g4 jb">
   <p>MIT · <a href="https://github.com/hertonwork">Herton</a></p>
-  <p>Built with <a href="https://minim.herton.work">Minim</a> and <a href="https://sscss.herton.work">sscss</a>: one HTML file, no request for JS or CSS.</p>
+  <p>Built with <a href="https://minim.herton.work">minim</a> and <a href="https://sscss.herton.work">sscss</a>: one HTML file, no request for JS or CSS.</p>
 </footer>
 
 <script><!--minim--></script>

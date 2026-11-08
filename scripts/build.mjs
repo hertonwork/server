@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Build the page: site/ → public/.   node scripts/build.mjs
 //
-//   site/index.html, site/404.html   page templates: sscss classes, Minim bindings, two slots at the end of the body
+//   site/index.html, site/404.html   page templates: sscss classes, minim bindings, two slots at the end of the body
 //   site/app.js                      the page's own script → inlined at <script><!--app--></script>
-//   vendor/minim.min.js              Minim (inlined at <script><!--minim--></script>)
+//   vendor/minim.min.js              minim (inlined at <script><!--minim--></script>)
 //   vendor/sscss.mjs                 generates exactly the CSS each page uses → <style data-sscss> before </head>
 //   site/sw.js                       service worker template → public/sw.js with VERSION and PRECACHE filled in
 //   vendor/shader-hero/              the hero's animation: the shader-hero harness + the traffic scene, assembled the way

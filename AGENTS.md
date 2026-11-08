@@ -13,12 +13,12 @@ verifies everything.
 | `lib/mcp.js` | the MCP endpoint (`mcp: true` / `MCP=1`): POST /mcp, Streamable HTTP, stateless, both protocol eras (2026-07-28 `server/discover`; 2025-11-25…03-26 `initialize`), four read-only tools that go through the server's own `resolve()` and handler | yes — add a test in the same change |
 | `test/server.test.mjs`, `test/mcp.test.mjs` | `node:test` over a real socket against a temporary `public/`; raw `http` where `fetch()` would hide something (compression, odd URLs); the MCP suite speaks both eras | yes |
 | `public/` | what is served. `index.html`, `404.html` and `sw.js` are **built** from `site/`; everything else (manifest, icons, screenshots, robots) is a plain asset | built files: no — `npm run build`. Assets: yes |
-| `site/index.html`, `site/404.html` | the page templates: sscss classes, Minim bindings, the state JSON, two slots at the end of the body (`<!--minim-->`, `<!--app-->`) | yes |
+| `site/index.html`, `site/404.html` | the page templates: sscss classes, minim bindings, the state JSON, two slots at the end of the body (`<!--minim-->`, `<!--app-->`) | yes |
 | `site/app.js` | the page's own script: the request inspector, the `/api/health` poll, the PWA plumbing (install, update prompt, offline) | yes |
 | `site/sw.js` | the service worker template; the build fills `__VERSION__` (a hash of every precached file) and `__PRECACHE__` | yes |
-| `scripts/build.mjs` | `site/` → `public/`: inlines Minim and `app.js`, generates the sscss block for each page, versions the service worker | yes |
+| `scripts/build.mjs` | `site/` → `public/`: inlines minim and `app.js`, generates the sscss block for each page, versions the service worker | yes |
 | `scripts/check.mjs` | the whole verification: tests, build (fails in CI when `public/` is stale), preflight, Lighthouse against this server | yes |
-| `scripts/vendor.mjs`, `vendor/` | the vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker), `shader-hero/` (the hero animation: the harness and the `traffic` scene from Minim's shader-hero skill). Refresh with `npm run vendor` | vendored files: no, refresh them (a change to the scene goes to the skill in the Minim repo first) |
+| `scripts/vendor.mjs`, `vendor/` | the vendored tools: `minim.min.js` (minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the minim page checker), `shader-hero/` (the hero animation: the harness and the `traffic` scene from minim's shader-hero skill). Refresh with `npm run vendor` | vendored files: no, refresh them (a change to the scene goes to the skill in the minim repo first) |
 | `scripts/shots.mjs`, `scripts/fireworks.mjs` | manifest screenshots + `preview.jpg`, and the Lighthouse fireworks GIF, both from this server (need Playwright, the GIF also `lighthouse` and ImageMagick; dev-only) | yes |
 | `package.json` | published as `@labs_kai/server`: only `lib/`, `server.js`, README and LICENSE ship (16 KB); the `server` bin is what `npx @labs_kai/server` runs | yes |
 | `.github/workflows/publish.yml` | a published GitHub release `vX.Y.Z` → tests, tag = package.json version, `npm publish --provenance` (secret `NPM_TOKEN`) | yes |
@@ -36,7 +36,7 @@ npm run check           # tests + build + preflight + Lighthouse (if `lighthouse
 npm run check -- --no-lighthouse
 npm run cert            # self-signed localhost pair → the next `npm start` is https
 npm run mcp             # serve with the MCP endpoint on; then: claude mcp add --transport http server http://127.0.0.1:2211/mcp
-npm run vendor          # refresh vendor/ from the Minim and sscss repositories
+npm run vendor          # refresh vendor/ from the minim and sscss repositories
 npm run shots           # manifest screenshots + preview.jpg (Playwright)
 npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + ImageMagick)
 ```
@@ -56,7 +56,7 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
 - **The server never crashes on input.** A malformed URL is a 400, a missing file a 404, an unexpected error a 500 —
   logged when `VERBOSE`, never thrown out of the handler. The vanishing-file test exists for this.
 - **The page is one file, 100/100/100/100, and the build keeps it so.** No external JS, CSS or fonts; initial state
-  pre-rendered in the markup; Minim inlined at the end of the body; entrance motion is transform-only. The page's
+  pre-rendered in the markup; minim inlined at the end of the body; entrance motion is transform-only. The page's
   classes are [sscss](https://github.com/hertonwork/sscss) — `scripts/build.mjs` generates exactly the rules used and
   **fails on a class that is neither sscss nor styled in the page's own `<style>`**. Keep that `<style>` short.
 - **Build before you judge, commit what you built.** Tests and Lighthouse run on `public/`; `npm run check` fails in
@@ -70,7 +70,7 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
   must be complete without it. To see it in a headless browser, open the page with `#traffic`.
 - **Design as a decision.** Large type in the system font, sections that each have their own composition, surfaces
   separated by a tone step, no gradients, hairlines or emoji in content, one accent action per screen. The rules are
-  `references/design.md` in the Minim page skill; the page follows them.
+  `references/design.md` in the minim page skill; the page follows them.
 - **server.herton.work is GitHub Pages, not this server.** It serves `public/` statically, so there `/api/health` is a
   404 and the page shows its static-host notes (that is by design — don't "fix" them away). Headers, compression, the
   SPA fallback and the routes are only seen where `npm start` runs; measure those locally with `npm run check`.
@@ -81,7 +81,7 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
 ## Using this server for your own app
 
 Replace `public/` with your build (keep `404.html` if you want a styled not-found page) and `npm start`. For a page in
-the same style as the bundled one — sscss classes, Minim bindings, a generated stylesheet, Lighthouse 100 — use the
+the same style as the bundled one — sscss classes, minim bindings, a generated stylesheet, Lighthouse 100 — use the
 skill in `skills/simple-server/` (`npx skills add hertonwork/server`), which hands off to the
 [minim-page](https://github.com/hertonwork/minim/tree/main/skills/minim-page) and
 [sscss](https://github.com/hertonwork/sscss/tree/main/skills/sscss) skills for the page itself.

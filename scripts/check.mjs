@@ -31,7 +31,10 @@ try {
   execFileSync('git', ['diff', '--quiet', '--', 'public'], { cwd: root, stdio: 'ignore' });
   console.log('public/ is up to date');
 } catch (e) {
-  if (e.status === 1) { console.log('public/ changed when built — commit the result of `npm run build`'); if (process.env.CI) failed = true; }
+  if (e.status === 1) {
+    console.log('public/ changed when built. public/index.html, 404.html and sw.js are generated from site/: edit site/, run `npm run build`, commit both');
+    if (process.env.CI) failed = true;
+  }
 }
 
 step(3, 'preflight');

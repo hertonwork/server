@@ -1,5 +1,5 @@
-// The page's own script: asks this server about itself and writes the answers into `app`; Minim renders them.
-// Inlined by scripts/build.mjs after Minim at the end of the body. Every fetch carries `x-probe` so the service
+// The page's own script: asks this server about itself and writes the answers into `app`; minim renders them.
+// Inlined by scripts/build.mjs after minim at the end of the body. Every fetch carries `x-probe` so the service
 // worker lets it through to the network and the headers shown are the server's, not the cache's.
 (() => {
   const $ = (id) => document.getElementById(id);

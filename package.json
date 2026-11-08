@@ -1,22 +1,46 @@
 {
-  "name": "single-page-server",
-  "version": "1.0.0",
-  "description": "Single page node server with no dependencies",
-  "main": "htmlServer.js",
-  "repository": {
-    "type": "git",
-    "url": "https://git.hersidea.com/herton/server"
+  "name": "simple-server",
+  "version": "2.0.0",
+  "description": "Zero-dependency Node static server for a single-page app: secure paths, compression, caching, SPA fallback, PWA-ready. 100/100 Lighthouse out of the box.",
+  "type": "module",
+  "main": "lib/simple-server.js",
+  "exports": {
+    ".": "./lib/simple-server.js"
   },
-  "homepage": "https://server.herton.work",
+  "bin": {
+    "simple-server": "server.js"
+  },
+  "files": [
+    "lib",
+    "server.js",
+    "public"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node server.js",
-    "test": "node test.js"
+    "dev": "VERBOSE=1 node --watch server.js",
+    "test": "node --test test/*.test.mjs",
+    "cert": "openssl req -x509 -newkey rsa:2048 -nodes -days 825 -keyout key.pem -out cert.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hertonwork/simple-server.git"
+  },
+  "homepage": "https://github.com/hertonwork/simple-server#readme",
+  "bugs": {
+    "url": "https://github.com/hertonwork/simple-server/issues"
   },
   "keywords": [
-    "server",
-    "single",
-    "page"
+    "static-server",
+    "spa",
+    "pwa",
+    "http",
+    "zero-dependencies",
+    "node",
+    "lighthouse"
   ],
-  "author": "Herton <d@ntas.cc>",
+  "author": "Herton (https://github.com/hertonwork)",
   "license": "MIT"
 }

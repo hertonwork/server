@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple 404 page not found</title>
-    <meta name="description" content="Simple 404 page not found">
-    <!-- Above the fold styles -->
-    <style>.wrapper {max-width:500px;margin:1rem auto;text-align:center;padding:0 1rem;}</style>
-    <!-- Non blocking styles -->
-    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <!-- Fallback when JavaScript is not available -->
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>
-    <!-- Assync scripts -->
-    <script type="text/javascript" src="scripts.js" async></script>
-    <!-- PWA stuff -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="white">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <meta name="robots" content="noindex">
+  <title>Not found — simple-server</title>
+  <meta name="description" content="There is nothing at this address on this simple-server instance.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <!-- Served with a 404 status for any file that doesn't exist. Built from site/404.html by `npm run build`. -->
+  <style>
+    body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-underline-offset: .15em; }
+    h1 { margin: 0; font-size: clamp(2.6rem, 6.6vw, 5.4rem); letter-spacing: -0.035em; line-height: .95; text-wrap: balance; }
+    p { margin: 0; max-width: 62ch; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; background: var(--sf); padding: .1em .35em; border-radius: 5px; overflow-wrap: anywhere; }
+    .wrap { width: min(1120px, 100% - 2 * clamp(20px, 4vw, 32px)); }
+    .ba:hover { background: color-mix(in srgb, var(--acc), var(--ink) 12%); }
+    :focus-visible { outline: 3px solid var(--acc); outline-offset: 3px; }
+  </style>
+  <style data-sscss>*,::before,::after{box-sizing:border-box;border:0 solid}body{margin:0;font:16px/1.5 ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}img,svg{max-width:100%;height:auto}:root{--ink:#0b0f14;--mut:#4b5563;--bg:#fff;--sf:#f2f4f7;--sf2:#dfe3e9;--acc:#1a7a37;--acci:#fff;--r:8px}@media(prefers-color-scheme:dark){:root{--ink:#e6edf3;--mut:#9ca3af;--bg:#0d1117;--sf:#161b22;--sf2:#2a313b;--acc:#3fb950;--acci:#0d1117}}.ac{align-items:center}.an-fx{transition:background .15s,transform .12s,color .15s}.an-fx:active{transform:scale(.97)}.b{font-weight:700}.ba{background:var(--acc)}.cw{color:var(--acci)}.f{display:flex}.fw{flex-wrap:wrap}.g2{gap:0.5rem}.g4{gap:1rem}.ib{display:inline-block}.md{font-weight:500}.mt3{margin-top:0.75rem}.mt6{margin-top:2rem}.mt7{margin-top:3rem}.mx{margin-inline:auto}.nu{text-decoration:none}.nw{white-space:nowrap}.px4{padding-inline:1rem}.py10{padding-block:8rem}.py3{padding-block:0.75rem}.py4{padding-block:1rem}.r{border-radius:var(--r)}.sb{font-weight:600}.t3{font-size:1.125rem;line-height:1.5}.t4{font-size:1.25rem;line-height:1.5}.t5{font-size:1.5rem;line-height:1.5}.tn{font-variant-numeric:tabular-nums}.tt{letter-spacing:-.025em}.vh{min-height:100vh}.x{flex:1}@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}</style>
 </head>
 <body>
-    <div class="wrapper">
-        <img src="sad.png" width="90" height="90" alt="icon"/>
-        <h2>Simple Node Server Not Found</h2>
-    </div>
+
+<header class="wrap mx f ac g4 py4">
+  <a href="/" class="t4 b tt nu x">simple-server</a>
+  <nav class="f ac g4 md nw" aria-label="Site"><a class="nu" href="https://github.com/hertonwork/simple-server">GitHub</a></nav>
+</header>
+
+<main class="wrap mx vh py10">
+  <p class="t5 b tn">404</p>
+  <h1 class="mt3">There is nothing here.</h1>
+  <p class="t3 mt6">No file at <code id="where">this address</code>, and it is not one of the app's routes. Routes without a file extension get the app; a path with one has to exist.</p>
+  <p class="f fw g2 mt7"><a class="r ba cw px4 py3 nu sb ib an-fx" href="/">Back to the start</a></p>
+</main>
+
+<script>document.getElementById('where').textContent = location.pathname;</script>
 </body>
 </html>

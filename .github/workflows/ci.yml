@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # nothing to install for the server, the build or the tests; Lighthouse is the one tool the check borrows
+      - run: npm i -g lighthouse
+      - run: npm run check
+        env:
+          CI: 1
+          LH_PERF_MIN: 95   # the runner's noise, not the page's: locally this is 100

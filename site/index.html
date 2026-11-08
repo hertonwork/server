@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <title>simple-server — a static server for a single-page app, in one Node file</title>
+  <meta name="description" content="A zero-dependency Node web server for a single-page app: safe paths, brotli, caching, SPA fallback, PWA. Run npm start and you're serving. 100/100 Lighthouse out of the box.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+
+  <!-- This page is the server's demo and the shell your app replaces. It is built from site/ by `npm run build`:
+       the classes are sscss (vendor/sscss.mjs generates exactly the rules used into a data-sscss style block at the end
+       of this head), the state below is rendered by Minim (vendor/minim.min.js, inlined at the end of the body), and
+       the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-underline-offset: .15em; }
+    h1, h2 { margin: 0; letter-spacing: -0.025em; line-height: 1.02; text-wrap: balance; }
+    h1 { font-size: clamp(2.6rem, 6.6vw, 5.4rem); letter-spacing: -0.035em; line-height: .95; }
+    h2 { font-size: clamp(1.9rem, 3.6vw, 2.9rem); }
+    p { margin: 0; max-width: 62ch; }
+    dl, dd, dt { margin: 0; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; background: var(--sf); padding: .1em .35em; border-radius: 5px; }
+    pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .9rem; line-height: 1.55; }
+    pre code { background: none; padding: 0; font-size: inherit; }
+    section { padding-block: clamp(56px, 9vw, 140px); }
+    .wrap { width: min(1120px, 100% - 2 * clamp(20px, 4vw, 32px)); }
+    @media (min-width: 768px) {
+      .gr.wl { grid-template-columns: 7fr 5fr; }
+      .gr.wr { grid-template-columns: 5fr 7fr; }
+      .swap > :first-child { order: 2; }
+    }
+    /* the one section that changes its whole field colour */
+    .field { background: #0b0f14; color: #fff; }
+    .field code { background: rgb(255 255 255 / .14); }
+    @media (prefers-color-scheme: dark) { .field { background: #1a7a37; } }
+    .big { font-size: clamp(4rem, 12vw, 9rem); letter-spacing: -0.04em; line-height: 1; }
+
+    button { font: inherit; font-weight: 600; cursor: pointer; line-height: 1.3; }
+    .btn:hover { background: color-mix(in srgb, var(--sf2), var(--ink) 10%); }
+    .ba:hover:is(button, a) { background: color-mix(in srgb, var(--acc), var(--ink) 12%); }
+    :focus-visible { outline: 3px solid var(--acc); outline-offset: 3px; }
+    label { display: block; font-weight: 600; }
+    select { display: block; width: 100%; margin-top: .3rem; font: inherit; color: var(--ink); background: var(--bg); border: 2px solid var(--sf2); border-radius: var(--r); padding: .55rem .75rem; }
+    select:focus { border-color: var(--acc); outline: none; }
+    .answer { min-height: 13.5rem; }
+    .answer dt { min-width: 12ch; }
+  </style>
+
+  <!-- State: every value the page shows, with the value it is first painted with. The script at the end of the body
+       replaces these with live answers from this server; Minim keeps the markup in sync. -->
+  <script type="application/json" data-state="app" data-root="root">
+    {
+      "path": "/",
+      "status": "200", "statusText": "OK", "ms": "–", "busy": false,
+      "headers": [
+        { "name": "content-type", "value": "text/html; charset=utf-8" },
+        { "name": "cache-control", "value": "no-cache" },
+        { "name": "content-encoding", "value": "br" },
+        { "name": "vary", "value": "Accept-Encoding" },
+        { "name": "etag", "value": "W/\"…\"" },
+        { "name": "x-content-type-options", "value": "nosniff" }
+      ],
+      "requests": "0", "started": "it started", "uptime": "0s", "node": "–", "live": "connecting", "static": false,
+      "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
+    }
+  </script>
+</head>
+<body>
+
+<header class="wrap mx f ac g4 py4">
+  <a href="/" class="t4 b tt nu x">simple-server</a>
+  <nav class="f ac g4 md nw" aria-label="Site">
+    <a href="#does" class="nu hd m-ib">What it does</a>
+    <a href="#pwa" class="nu hd m-ib">PWA</a>
+    <a href="#yours" class="nu hd m-ib">Make it yours</a>
+    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="https://github.com/hertonwork/simple-server">GitHub</a>
+  </nav>
+</header>
+
+<main id="root">
+
+  <section>
+    <div class="wrap mx gr g8 m-c2 wl">
+      <div class="an-rise">
+        <h1>One file. Zero dependencies.</h1>
+        <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: clone it and start it.</p>
+        <pre class="r bs p4 mt6"><code>git clone https://github.com/hertonwork/simple-server.git
+cd simple-server
+npm start
+# → http://127.0.0.1:2211</code></pre>
+        <p class="f fw g2 mt6"><a class="r ba cw px4 py3 nu sb ib an-fx" href="https://github.com/hertonwork/simple-server">View on GitHub</a> <a class="r bs2 ci px4 py3 nu sb ib an-fx btn" href="#does">What it does</a></p>
+      </div>
+      <div class="r2 bs p6 an-rise">
+        <p class="t4 b mb4">Ask this server something</p>
+        <label>Request
+          <select data-model="path" id="path">
+            <option value="/">GET / — the app shell</option>
+            <option value="/about">GET /about — a client-side route</option>
+            <option value="/api/health">GET /api/health — JSON route</option>
+            <option value="/manifest.webmanifest">GET /manifest.webmanifest</option>
+            <option value="/android-chrome-192x192.png">GET /android-chrome-192x192.png</option>
+            <option value="/sw.js">GET /sw.js — the service worker</option>
+            <option value="/missing.png">GET /missing.png — not there</option>
+            <option value="/api/nothing">GET /api/nothing — unknown route</option>
+            <option value="/..%2f..%2fpackage.json">GET /..%2f..%2fpackage.json — traversal</option>
+          </select>
+        </label>
+        <p class="f ac g3 mt4"><button type="button" id="send" class="r bs2 ci px4 py2 an-fx btn" data-class="an-spin:busy">Send</button> <span class="t1 cm tn"><b data-watch="ms">–</b> ms</span></p>
+        <div class="answer">
+          <p class="t5 b tn mt4"><span data-watch="status">200</span> <span class="t3 md" data-watch="statusText">OK</span></p>
+          <dl class="mt3 sy1 t1 mono">
+            <template data-each="headers">
+              <div class="f fw g2 an-in"><dt class="cm fs0" data-watch="$.name"></dt><dd data-watch="$.value"></dd></div>
+            </template>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs" id="does">
+    <div class="wrap mx gr g8 m-c2 wr">
+      <div class="sy4 an-rise">
+        <h2>What a static host does.</h2>
+        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/simple-server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Seventeen tests over a real socket keep it honest: <code>npm test</code>.</p>
+      </div>
+      <dl class="gr g5 m-c2 an-rise">
+        <div><dt class="sb">Safe paths</dt><dd class="t1 mt1">Every URL resolves inside <code>public/</code>. <code>../</code>, encoded dots, doubled slashes and dotfiles can't escape it; <code>/.well-known/</code> can.</dd></div>
+        <div><dt class="sb">SPA fallback</dt><dd class="t1 mt1">Extension-less paths get <code>index.html</code> with a 200, so client-side routing works. Unknown <code>/api/*</code> paths and non-HTML requests get a real 404.</dd></div>
+        <div><dt class="sb">Caching that doesn't bite</dt><dd class="t1 mt1">HTML, <code>sw.js</code> and the manifest: <code>no-cache</code>. Assets: a day. Fingerprinted assets: a year, <code>immutable</code>. Weak ETags and <code>Last-Modified</code> turn repeat visits into 304s.</dd></div>
+        <div><dt class="sb">Compression</dt><dd class="t1 mt1">Brotli or gzip for text over 1 KB, with <code>Vary: Accept-Encoding</code>. Images and fonts are left alone.</dd></div>
+        <div><dt class="sb">Right types</dt><dd class="t1 mt1">Content-Type with charset for text, <code>application/manifest+json</code>, <code>font/woff2</code>, <code>image/x-icon</code>, <code>application/wasm</code>.</dd></div>
+        <div><dt class="sb">Range requests</dt><dd class="t1 mt1"><code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code> seek with <code>206 Partial Content</code>.</dd></div>
+        <div><dt class="sb">Security headers</dt><dd class="t1 mt1"><code>X-Content-Type-Options</code>, <code>Referrer-Policy</code>, <code>X-Frame-Options</code>; HSTS when the connection is TLS.</dd></div>
+        <div><dt class="sb">Never a crash</dt><dd class="t1 mt1">Malformed URLs are a 400, other methods a 405, a file that disappears mid-request a 404, anything unexpected a 500. The process stays up.</dd></div>
+        <div><dt class="sb">Health and routes</dt><dd class="t1 mt1"><code>GET /api/health</code> answers with uptime and request count; add your own JSON routes in a line each.</dd></div>
+        <div><dt class="sb">HTTPS when you want it</dt><dd class="t1 mt1"><code>npm run cert</code> makes a localhost pair and the server switches to HTTPS. Behind nginx or Caddy, leave it off.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="field" id="status">
+    <div class="wrap mx">
+      <h2>Live, from this process.</h2>
+      <p class="t3 mt3">The page asks <code>/api/health</code> every ten seconds; Minim renders the answer.</p>
+      <p class="big b tn mt7"><span data-watch="requests">0</span></p>
+      <p class="t3 mt2">requests served since <span data-watch="started">it started</span></p>
+      <p class="t3 mt2" data-show="static" hidden>This copy is on a static host, so there is no process to ask. Run it locally to see it count.</p>
+      <dl class="f fw g7 mt7">
+        <div><dt class="t1">Uptime</dt><dd class="t4 sb tn" data-watch="uptime">0s</dd></div>
+        <div><dt class="t1">Node</dt><dd class="t4 sb" data-watch="node">–</dd></div>
+        <div><dt class="t1">Server</dt><dd class="t4 sb" data-watch="live">connecting</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="pwa">
+    <div class="wrap mx gr g8 m-c2 wr swap">
+      <div class="sy4 an-rise">
+        <h2>A PWA that updates itself.</h2>
+        <p>The build hashes every file it ships into the service worker, so each deploy is a new cache version. The shell, the not-found page and the icons are precached at install; assets are served from cache and refreshed in the background; a navigation that can't reach the network gets the shell, so the app opens offline.</p>
+        <p>When a new version is installed behind the page, it waits. The page shows a prompt, and one tap swaps the worker and reloads. Because the server sends <code>sw.js</code> and the manifest with <code>no-cache</code>, browsers see a deploy at once instead of a day later.</p>
+        <p>The manifest has an <code>id</code>, maskable icons, a shortcut and screenshots, so it installs cleanly on Android, desktop Chrome, Edge and Safari.</p>
+      </div>
+      <div class="r2 bs p6 an-rise">
+        <p class="t4 b mb4">This install</p>
+        <dl class="sy3">
+          <div class="f jb g3"><dt>Service worker</dt><dd class="sb" data-watch="sw">checking</dd></div>
+          <div class="f jb g3"><dt>Cache version</dt><dd class="sb mono t1" data-watch="cache">–</dd></div>
+          <div class="f jb g3"><dt>Network</dt><dd class="sb" data-watch="network">online</dd></div>
+          <div class="f jb g3"><dt>Installed as an app</dt><dd class="sb" data-watch="installed">no</dd></div>
+        </dl>
+        <p class="f fw g2 mt5">
+          <button type="button" id="install" data-show="canInstall" hidden class="r ba cw px4 py2 an-fx">Install app</button>
+          <button type="button" id="update" class="r bs2 ci px4 py2 an-fx btn">Check for updates</button>
+        </p>
+        <p class="r ba cw p4 mt4 f ac jb g3 an-in" data-show="updateReady" hidden>A new version is ready. <button type="button" id="reload" class="r bg ci px3 py2 an-fx btn">Reload</button></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs" id="yours">
+    <div class="wrap mx">
+      <h2>Make it yours.</h2>
+      <div class="gr g8 m-c2 mt7">
+        <div class="sy4 an-rise">
+          <p class="t4 b">Your app</p>
+          <p>Drop your build into <code>public/</code>. <code>index.html</code> is the shell every client-side route falls back to, <code>404.html</code> the not-found page. Fingerprint your assets (<code>app.3f9c2a1b.js</code>) and they are cached for a year. Everything else is an environment variable.</p>
+          <pre class="r bg p4"><code>PORT=8080 HOST=0.0.0.0 npm start
+npm run dev          # verbose, restarts on change
+npm run cert         # then npm start speaks https
+npm run build        # site/ → public/ (this page, the service worker)</code></pre>
+        </div>
+        <div class="sy4 an-rise">
+          <p class="t4 b">Your agent</p>
+          <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server.</p>
+          <pre class="r bg p4"><code>npx skills add hertonwork/simple-server
+npm run check        # tests + preflight (+ Lighthouse when installed)</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap mx py8 t1 cm f fw g4 jb">
+  <p>MIT · <a href="https://github.com/hertonwork">Herton</a></p>
+  <p>Built with <a href="https://minim.herton.work">Minim</a> and <a href="https://sscss.herton.work">sscss</a>: one HTML file, no request for JS or CSS.</p>
+</footer>
+
+<script><!--minim--></script>
+<script><!--app--></script>
+</body>
+</html>

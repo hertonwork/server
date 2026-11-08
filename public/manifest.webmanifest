@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "simple-server",
+  "short_name": "simple-server",
+  "description": "A static web server for a single-page app, in one Node file, with nothing to install.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#1a7a37",
+  "categories": ["developer tools", "utilities"],
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Server status", "short_name": "Status", "description": "Requests served, uptime and Node version of this process", "url": "/?source=shortcut#status", "icons": [{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" }] }
+  ],
+  "screenshots": [
+    { "src": "/screenshot-wide.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "The request inspector and the live status panel on a desktop" },
+    { "src": "/screenshot-narrow.png", "sizes": "750x1334", "type": "image/png", "form_factor": "narrow", "label": "The request inspector on a phone" }
+  ]
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <meta name="robots" content="noindex">
+  <title>Not found — simple-server</title>
+  <meta name="description" content="There is nothing at this address on this simple-server instance.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <!-- Served with a 404 status for any file that doesn't exist. Built from site/404.html by `npm run build`. -->
+  <style>
+    body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-underline-offset: .15em; }
+    h1 { margin: 0; font-size: clamp(2.6rem, 6.6vw, 5.4rem); letter-spacing: -0.035em; line-height: .95; text-wrap: balance; }
+    p { margin: 0; max-width: 62ch; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; background: var(--sf); padding: .1em .35em; border-radius: 5px; overflow-wrap: anywhere; }
+    .wrap { width: min(1120px, 100% - 2 * clamp(20px, 4vw, 32px)); }
+    .ba:hover { background: color-mix(in srgb, var(--acc), var(--ink) 12%); }
+    :focus-visible { outline: 3px solid var(--acc); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+<header class="wrap mx f ac g4 py4">
+  <a href="/" class="t4 b tt nu x">simple-server</a>
+  <nav class="f ac g4 md nw" aria-label="Site"><a class="nu" href="https://github.com/hertonwork/simple-server">GitHub</a></nav>
+</header>
+
+<main class="wrap mx vh py10">
+  <p class="t5 b tn">404</p>
+  <h1 class="mt3">There is nothing here.</h1>
+  <p class="t3 mt6">No file at <code id="where">this address</code>, and it is not one of the app's routes. Routes without a file extension get the app; a path with one has to exist.</p>
+  <p class="f fw g2 mt7"><a class="r ba cw px4 py3 nu sb ib an-fx" href="/">Back to the start</a></p>
+</main>
+
+<script>document.getElementById('where').textContent = location.pathname;</script>
+</body>
+</html>

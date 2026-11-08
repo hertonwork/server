@@ -2,16 +2,15 @@
 
 A static web server for a single-page app, in one Node file, with nothing to install.
 
-* **Simple setup** — `npm start`. No build, no config file, no `npm install`.
-* **No npm dependencies** — `node:http`, `node:fs`, `node:zlib`. That's it.
-* **100/100 Lighthouse out of the box** — the bundled page scores 100 in every category.
-* **PWA** — manifest, service worker, offline page, installable.
-* **Does the real work a static host does** — safe paths, compression, caching, ETags, SPA fallback, security headers.
-
-## Preview
+* **Simple setup** — `npm start`. No build step to run, no config file, no `npm install`.
+* **No npm dependencies** — `node:http`, `node:fs`, `node:zlib`. Not for running, building or testing.
+* **100/100 Lighthouse out of the box** — every category, mobile and desktop, measured against the real server.
+* **A PWA that updates itself** — versioned precache, offline shell, update prompt, installable.
+* **Does what a static host does** — safe paths, brotli, typed caching, ETags, SPA fallback, security headers.
+* **Agent friendly** — `AGENTS.md`, a skill, one command that verifies everything.
 
 <p align="center">
-<img src="public/preview.jpg" alt="Lighthouse: 100 in every category" width="700">
+<img src="public/preview.jpg" alt="The bundled page: a request inspector that asks the server about itself" width="700">
 </p>
 
 ## Run it
@@ -22,12 +21,13 @@ cd simple-server
 npm start            # → http://127.0.0.1:2211
 ```
 
-Put your app in `public/`. `index.html` is the shell, `404.html` the not-found page. Everything is configured with environment variables:
+Put your app in `public/`. `index.html` is the shell every client-side route falls back to, `404.html` the not-found
+page. Everything else is an environment variable:
 
 | Variable | Default | What it does |
 | --- | --- | --- |
 | `PORT` | `2211` | Port to listen on |
-| `HOST` | `127.0.0.1` | Bind address. Use `0.0.0.0` in a container or to reach it from another machine |
+| `HOST` | `127.0.0.1` | Bind address. `0.0.0.0` in a container or to reach it from another machine |
 | `PUBLIC_DIR` | `public` | Folder to serve |
 | `VERBOSE` | off | `VERBOSE=1` logs one line per request |
 | `TLS_KEY`, `TLS_CERT` | `key.pem`, `cert.pem` | When both files exist the server speaks HTTPS |
@@ -35,8 +35,9 @@ Put your app in `public/`. `index.html` is the shell, `404.html` the not-found p
 ```sh
 PORT=8080 HOST=0.0.0.0 npm start
 npm run dev          # verbose, restarts when a file changes
-npm run cert         # self-signed localhost certificate → next `npm start` is https
-npm test             # the server's test-suite (node:test, no dependencies either)
+npm run cert         # self-signed localhost certificate → the next `npm start` is https
+npm test             # the server's tests (node:test, over a real socket)
+npm run check        # tests + build + preflight + Lighthouse against this server
 ```
 
 Behind nginx or Caddy you don't need the certificate: the proxy terminates TLS and talks plain HTTP to `127.0.0.1:2211`.
@@ -55,16 +56,16 @@ location / {
 | | |
 | --- | --- |
 | **Safe paths** | Every URL is resolved inside `public/`; `../`, encoded dots and doubled slashes can't escape it. Dotfiles (`.env`, `.git`) are hidden, `/.well-known/` is not |
-| **SPA fallback** | Extension-less paths (`/about`, `/users/42`) get `index.html` with a 200 so client-side routing works. Unknown `/api/*` paths and non-HTML requests get a 404 |
-| **Correct types** | Content-Type with charset for text, `image/x-icon`, `font/woff2`, `application/manifest+json`, … |
-| **Caching** | HTML, `sw.js` and the manifest: `no-cache` (always revalidated). Assets: one day. Fingerprinted assets (`app.3f9c2a1b.js`): one year, `immutable`. Weak ETags and `Last-Modified` → 304s |
+| **SPA fallback** | Extension-less paths (`/about`, `/users/42`) get `index.html` with a 200 so client-side routing works. Unknown `/api/*` paths and non-HTML requests get a real 404 |
+| **Correct types** | Content-Type with charset for text, `image/x-icon`, `font/woff2`, `application/manifest+json`, `application/wasm`, … |
+| **Caching** | HTML, `sw.js` and the manifest: `no-cache` (always revalidated, so deploys show up at once). Assets: one day. Fingerprinted assets (`app.3f9c2a1b.js`): one year, `immutable`. Weak ETags and `Last-Modified` → 304s |
 | **Compression** | Brotli or gzip for text over 1 KB, `Vary: Accept-Encoding` |
 | **Range requests** | `<video>` and `<audio>` seek with `206 Partial Content` |
 | **Security headers** | `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`; HSTS when the connection is TLS |
 | **Robust** | Malformed URLs → 400, `POST` → 405, a file that disappears → 404, an unexpected error → 500. Never a crash |
 | **Health** | `GET /api/health` → `{ ok, started, uptime, requests, node }` |
 
-## Use it as a module
+### Use it as a module
 
 ```js
 import { createServer } from './lib/simple-server.js';
@@ -80,7 +81,47 @@ createServer({
 }).listen(2211);
 ```
 
-`createHandler(options)` returns just the `(req, res)` function if you want to mount it on your own server. All options and their defaults are at the top of [`lib/simple-server.js`](lib/simple-server.js).
+`createHandler(options)` returns just the `(req, res)` function if you want to mount it on your own server. All
+options and their defaults are at the top of [`lib/simple-server.js`](lib/simple-server.js).
+
+## The page
+
+`public/index.html` is the server's demo and the shell your app replaces: one HTML file with no request for JS, CSS or
+fonts. It is built from `site/` with [sscss](https://github.com/hertonwork/sscss) (a vocabulary of tiny utility
+classes; the build generates exactly the rules the page uses, 2.5 KB) and [Minim](https://github.com/hertonwork/minim)
+(a 2.5 KB reactive library; the state is a JSON tag, the markup binds to it by key). On it:
+
+* a **request inspector** — pick a path, the page fetches it from this server and shows the status and the headers
+  that matter (type, caching, encoding, ETag), including what a traversal attempt gets;
+* a **live status panel** — `/api/health` every ten seconds: requests served, uptime, Node version;
+* the **PWA state** — service worker, cache version, network, install and update buttons.
+
+```sh
+npm run build        # site/ → public/index.html, public/404.html, public/sw.js
+npm run check        # + preflight + Lighthouse (npm i -g lighthouse; CHROME_PATH if Chrome isn't found)
+npm run vendor       # refresh vendor/ (Minim, the sscss generator, the preflight) from their repositories
+```
+
+## The PWA
+
+* `manifest.webmanifest` with an `id`, maskable icon, a shortcut and screenshots — installable on Android, desktop
+  Chrome and Edge, Safari.
+* `sw.js` is generated: its version is a hash of every file it precaches, so a deploy that changes something is a new
+  cache and one that changes nothing leaves installed workers alone. The shell, the not-found page, the manifest and
+  the icons are precached; a navigation that can't reach the network gets the shell, so the app opens offline; other
+  files are served from cache and refreshed in the background.
+* When a new version is installed behind an open page, the page shows **"A new version is ready — Reload"**; one tap
+  activates it. The server sends `sw.js` and the manifest with `no-cache`, so browsers see a deploy at once.
+
+## For agents
+
+The repository is laid out to be worked on by coding agents as much as by people:
+
+* [`AGENTS.md`](AGENTS.md) — the layout, the commands, and the rules that keep the project what it is (zero
+  dependencies, nothing served outside `public/`, never a crash, the page stays at 100).
+* [`skills/simple-server/`](skills/simple-server/SKILL.md) — a skill that teaches an agent to serve a project with it
+  and to build and verify a page the way the bundled one was built. `npx skills add hertonwork/simple-server`.
+* `npm run check` — tests, build, preflight and Lighthouse in one command, the same thing CI runs.
 
 ## License
 

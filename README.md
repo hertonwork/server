@@ -18,25 +18,34 @@ live-status panel says so; clone it and `npm start` to see the server itself ans
 
 ## Run it
 
+Serve any folder, with nothing to clone or install:
+
+```sh
+npx @labs_kai/server dist            # → http://127.0.0.1:2211
+```
+
+Or clone it to start from the bundled page and PWA:
+
 ```sh
 git clone https://github.com/hertonwork/server.git
 cd server
-npm start            # → http://127.0.0.1:2211
+npm start            # serves public/
 ```
 
-Put your app in `public/`. `index.html` is the shell every client-side route falls back to, `404.html` the not-found
-page. Everything else is an environment variable:
+`index.html` is the shell every client-side route falls back to, `404.html` the not-found page. The rest is a flag or
+an environment variable (flags win):
 
-| Variable | Default | What it does |
-| --- | --- | --- |
-| `PORT` | `2211` | Port to listen on |
-| `HOST` | `127.0.0.1` | Bind address. `0.0.0.0` in a container or to reach it from another machine |
-| `PUBLIC_DIR` | `public` | Folder to serve |
-| `VERBOSE` | off | `VERBOSE=1` logs one line per request |
-| `TLS_KEY`, `TLS_CERT` | `key.pem`, `cert.pem` | When both files exist the server speaks HTTPS |
-| `MCP` | off | `MCP=1` answers MCP clients (coding agents) at `/mcp` — see [MCP](#mcp) |
+| Flag | Variable | Default | What it does |
+| --- | --- | --- | --- |
+| `[folder]` | `PUBLIC_DIR` | `./public` if it exists, else `.` | Folder to serve |
+| `-p, --port` | `PORT` | `2211` | Port to listen on (`0` picks a free one) |
+| `--host` | `HOST` | `127.0.0.1` | Bind address. `0.0.0.0` in a container or to reach it from another machine |
+| `-v, --verbose` | `VERBOSE` | off | One log line per request |
+| `--mcp` | `MCP` | off | Answer MCP clients (coding agents) at `/mcp` — see [MCP](#mcp) |
+| | `TLS_KEY`, `TLS_CERT` | `key.pem`, `cert.pem` | When both files exist the server speaks HTTPS |
 
 ```sh
+npx @labs_kai/server dist --port 8080 --host 0.0.0.0
 PORT=8080 HOST=0.0.0.0 npm start
 npm run dev          # verbose, restarts when a file changes
 npm run cert         # self-signed localhost certificate → the next `npm start` is https
@@ -71,8 +80,12 @@ location / {
 
 ### Use it as a module
 
+```sh
+npm i @labs_kai/server
+```
+
 ```js
-import { createServer } from './lib/simple-server.js';
+import { createServer } from '@labs_kai/server';     // in a clone: './lib/simple-server.js'
 
 createServer({
   publicDir: 'dist',
@@ -85,8 +98,9 @@ createServer({
 }).listen(2211);
 ```
 
-`createHandler(options)` returns just the `(req, res)` function if you want to mount it on your own server. All
-options and their defaults are at the top of [`lib/simple-server.js`](lib/simple-server.js).
+`createHandler(options)` returns just the `(req, res)` function if you want to mount it on your own server; `mcp: true`
+adds the [MCP](#mcp) endpoint. All options and their defaults are at the top of
+[`lib/simple-server.js`](lib/simple-server.js). The package is 16 KB: the server, the MCP endpoint and the command.
 
 ## The page
 
@@ -137,7 +151,7 @@ The repository is laid out to be worked on by coding agents as much as by people
 Start it with `MCP=1` and coding agents can talk to it at `/mcp`:
 
 ```sh
-MCP=1 npm start      # or: npm run mcp
+npx @labs_kai/server dist --mcp      # in a clone: npm run mcp
 claude mcp add --transport http server http://127.0.0.1:2211/mcp
 ```
 

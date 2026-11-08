@@ -1,22 +1,26 @@
 {
-  "name": "simple-server",
+  "name": "@labs_kai/server",
   "version": "2.0.0",
   "description": "Zero-dependency Node static server for a single-page app: safe paths, brotli, caching, SPA fallback, PWA. 100/100 Lighthouse out of the box, agent-friendly, with an optional MCP endpoint.",
   "type": "module",
   "main": "lib/simple-server.js",
   "exports": {
-    ".": "./lib/simple-server.js"
+    ".": "./lib/simple-server.js",
+    "./mcp": "./lib/mcp.js",
+    "./package.json": "./package.json"
   },
   "bin": {
-    "simple-server": "server.js"
+    "server": "server.js"
   },
   "files": [
     "lib",
-    "server.js",
-    "public"
+    "server.js"
   ],
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "start": "node server.js",
@@ -28,7 +32,8 @@
     "vendor": "node scripts/vendor.mjs",
     "shots": "node scripts/shots.mjs",
     "cert": "openssl req -x509 -newkey rsa:2048 -nodes -days 825 -keyout key.pem -out cert.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1",
-    "fireworks": "node scripts/fireworks.mjs"
+    "fireworks": "node scripts/fireworks.mjs",
+    "prepublishOnly": "npm test"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,27 @@
+name: Publish to npm
+
+# Publishes @labs_kai/server when a GitHub release is published. Needs the NPM_TOKEN secret
+# (an npm automation token with publish rights on the @labs_kai scope), the same one Minim and sscss use.
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      # nothing to install: the tests run on Node alone
+      - run: npm test
+      - name: The release tag matches package.json
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

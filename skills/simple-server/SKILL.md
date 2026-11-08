@@ -19,6 +19,14 @@ shell a project replaces.
 
 ## 1. Serve a project
 
+Nothing to clone for a built app:
+
+```sh
+npx @labs_kai/server dist                 # flags: --port --host --mcp --verbose; --help lists them
+```
+
+To start from the bundled page and PWA instead:
+
 ```sh
 git clone https://github.com/hertonwork/server.git my-app && cd my-app
 rm -rf public/* && cp -r ../dist/* public/      # your build; keep a 404.html if you want a styled not-found page
@@ -70,7 +78,7 @@ createServer({
 ### Let an agent ask the running server (MCP)
 
 ```sh
-MCP=1 npm start
+npx @labs_kai/server dist --mcp           # in a clone: MCP=1 npm start
 claude mcp add --transport http server http://127.0.0.1:2211/mcp
 ```
 

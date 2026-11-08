@@ -9,7 +9,7 @@ verifies everything.
 | Path | What | Edit? |
 |---|---|---|
 | `lib/simple-server.js` | the server: `createHandler(options)` and `createServer(options)`. Path safety, MIME, caching, ETags, compression, ranges, SPA fallback, routes, errors. Options and defaults at the top | yes — add a test in the same change |
-| `server.js` | the entry point: reads `PORT`, `HOST`, `PUBLIC_DIR`, `VERBOSE`, `TLS_KEY`/`TLS_CERT`, starts the server, shuts down cleanly | yes |
+| `server.js` | the command (`npm start`, `npx @labs_kai/server [folder]`): flags (`--port --host --mcp --verbose --help --version`) over env vars (`PORT HOST PUBLIC_DIR MCP VERBOSE TLS_KEY TLS_CERT`) over defaults; prints the actual address; shuts down cleanly | yes — `test/cli.test.mjs` runs it as a child process |
 | `lib/mcp.js` | the MCP endpoint (`mcp: true` / `MCP=1`): POST /mcp, Streamable HTTP, stateless, both protocol eras (2026-07-28 `server/discover`; 2025-11-25…03-26 `initialize`), four read-only tools that go through the server's own `resolve()` and handler | yes — add a test in the same change |
 | `test/server.test.mjs`, `test/mcp.test.mjs` | `node:test` over a real socket against a temporary `public/`; raw `http` where `fetch()` would hide something (compression, odd URLs); the MCP suite speaks both eras | yes |
 | `public/` | what is served. `index.html`, `404.html` and `sw.js` are **built** from `site/`; everything else (manifest, icons, screenshots, robots) is a plain asset | built files: no — `npm run build`. Assets: yes |
@@ -20,6 +20,8 @@ verifies everything.
 | `scripts/check.mjs` | the whole verification: tests, build (fails in CI when `public/` is stale), preflight, Lighthouse against this server | yes |
 | `scripts/vendor.mjs`, `vendor/` | the three vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker). Refresh with `npm run vendor` | vendored files: no, refresh them |
 | `scripts/shots.mjs`, `scripts/fireworks.mjs` | manifest screenshots + `preview.jpg`, and the Lighthouse fireworks GIF, both from this server (need Playwright, the GIF also `lighthouse` and ImageMagick; dev-only) | yes |
+| `package.json` | published as `@labs_kai/server`: only `lib/`, `server.js`, README and LICENSE ship (16 KB); the `server` bin is what `npx @labs_kai/server` runs | yes |
+| `.github/workflows/publish.yml` | a published GitHub release `vX.Y.Z` → tests, tag = package.json version, `npm publish --provenance` (secret `NPM_TOKEN`) | yes |
 | `.github/workflows/ci.yml`, `pages.yml` | CI runs `npm run check` on every PR; Pages publishes `public/` to server.herton.work on every push to `main` | yes |
 | `skills/simple-server/` | the agent skill: how to use this server for a project and how to build and verify a page the way this one was | yes |
 
@@ -69,6 +71,8 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
 - **server.herton.work is GitHub Pages, not this server.** It serves `public/` statically, so there `/api/health` is a
   404 and the page shows its static-host notes (that is by design — don't "fix" them away). Headers, compression, the
   SPA fallback and the routes are only seen where `npm start` runs; measure those locally with `npm run check`.
+- **Releasing.** Bump `version` in `package.json` in a PR; after it merges, publish a GitHub release tagged `v<version>`.
+  The publish workflow refuses a tag that doesn't match. `npm pack --dry-run` shows what ships.
 - Commits are plain; PRs explain what changed and why in the body.
 
 ## Using this server for your own app

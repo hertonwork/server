@@ -7,7 +7,7 @@ A static web server for a single-page app, in one Node file, with nothing to ins
 * **100/100 Lighthouse out of the box** — every category, mobile and desktop, measured against the real server.
 * **A PWA that updates itself** — versioned precache, offline shell, update prompt, installable.
 * **Does what a static host does** — safe paths, brotli, typed caching, ETags, SPA fallback, security headers.
-* **Agent friendly** — `AGENTS.md`, a skill, one command that verifies everything.
+* **Agent friendly** — `AGENTS.md`, a skill, an MCP endpoint, one command that verifies everything.
 
 <p align="center">
 <img src="public/lighthouse.gif" alt="Lighthouse: 100 Performance, 100 Accessibility, 100 Best Practices, 100 SEO — with fireworks" width="800">
@@ -34,6 +34,7 @@ page. Everything else is an environment variable:
 | `PUBLIC_DIR` | `public` | Folder to serve |
 | `VERBOSE` | off | `VERBOSE=1` logs one line per request |
 | `TLS_KEY`, `TLS_CERT` | `key.pem`, `cert.pem` | When both files exist the server speaks HTTPS |
+| `MCP` | off | `MCP=1` answers MCP clients (coding agents) at `/mcp` — see [MCP](#mcp) |
 
 ```sh
 PORT=8080 HOST=0.0.0.0 npm start
@@ -129,6 +130,30 @@ The repository is laid out to be worked on by coding agents as much as by people
 * [`skills/simple-server/`](skills/simple-server/SKILL.md) — a skill that teaches an agent to serve a project with it
   and to build and verify a page the way the bundled one was built. `npx skills add hertonwork/server`.
 * `npm run check` — tests, build, preflight and Lighthouse in one command, the same thing CI runs.
+* An MCP endpoint, so an agent can ask the running server what it serves and how it answers — below.
+
+## MCP
+
+Start it with `MCP=1` and coding agents can talk to it at `/mcp`:
+
+```sh
+MCP=1 npm start      # or: npm run mcp
+claude mcp add --transport http server http://127.0.0.1:2211/mcp
+```
+
+| Tool | Answers |
+| --- | --- |
+| `health` | uptime, requests served, Node version |
+| `list_files` | what `public/` serves: URL path, size, Content-Type |
+| `read_file` | a text file's contents (for other files: size and type) |
+| `inspect` | how the server answers a path: status, headers (cache, compression, ETag), size, the start of the body |
+
+Everything is read-only and goes through the server's own path rules and handler, so a tool never sees more than a
+browser could. It is one file, [`lib/mcp.js`](lib/mcp.js), with no SDK: Streamable HTTP, one JSON answer per request,
+no sessions. It speaks both eras of the protocol: **2026-07-28** (`server/discover`, the version on every request, as
+Claude Code sends it) and **2025-11-25 back to 2025-03-26** (`initialize` first, as the official TypeScript SDK 1.x
+does). A browser may only call it from a page on this machine (DNS-rebinding protection). Keep it off on a public
+deployment: what it shows is public anyway, but a file listing is not something to publish.
 
 ## License
 

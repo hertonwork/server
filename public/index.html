@@ -6,15 +6,15 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
-  <title>simple-server — a static server for a single-page app, in one Node file</title>
+  <title>server — a static server for a single-page app, in one Node file</title>
   <meta name="description" content="A zero-dependency Node web server for a single-page app: safe paths, brotli, caching, SPA fallback, PWA. Run npm start and you're serving. 100/100 Lighthouse out of the box.">
   <link rel="canonical" href="https://server.herton.work/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="simple-server">
-  <meta property="og:title" content="simple-server — one file, zero dependencies, 100/100 Lighthouse">
+  <meta property="og:site_name" content="server">
+  <meta property="og:title" content="server — one file, zero dependencies, 100/100 Lighthouse">
   <meta property="og:description" content="A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA. Nothing to install.">
   <meta property="og:url" content="https://server.herton.work/">
   <meta property="og:image" content="https://server.herton.work/preview.jpg">
@@ -28,6 +28,8 @@
        the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
   <style>
     html { scroll-behavior: smooth; }
+    /* Minim's data-show toggles `hidden`; a display utility (f, bk, ib…) would otherwise win over the browser's [hidden] rule */
+    [hidden] { display: none !important; }
     body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-underline-offset: .15em; }
     h1, h2 { margin: 0; letter-spacing: -0.025em; line-height: 1.02; text-wrap: balance; }
@@ -68,24 +70,19 @@
     {
       "path": "/",
       "status": "200", "statusText": "OK", "ms": "–", "busy": false,
-      "headers": [
-        { "name": "content-type", "value": "text/html; charset=utf-8" },
-        { "name": "cache-control", "value": "no-cache" },
-        { "name": "content-encoding", "value": "br" },
-        { "name": "vary", "value": "Accept-Encoding" },
-        { "name": "etag", "value": "W/\"…\"" },
-        { "name": "x-content-type-options", "value": "nosniff" }
-      ],
-      "requests": "0", "started": "it started", "uptime": "0s", "node": "–", "live": "connecting", "static": false,
+      "h": { "server": "", "content-type": "text/html; charset=utf-8", "cache-control": "no-cache", "content-encoding": "br", "vary": "Accept-Encoding", "etag": "W/\"…\"", "content-length": "", "x-content-type-options": "nosniff", "x-frame-options": "SAMEORIGIN", "allow": "", "location": "" },
+      "expect": "200, the app shell", "static": false,
+      "kb": "–", "raw": "–", "saved": "–", "assets": "0", "fcp": "–", "proto": "–", "viaSw": false,
+      "proc": false, "requests": "–", "uptime": "–", "node": "–",
       "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
     }
   </script>
-  <style data-sscss>*,::before,::after{box-sizing:border-box;border:0 solid}body{margin:0;font:16px/1.5 ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}img,svg{max-width:100%;height:auto}:root{--ink:#0b0f14;--mut:#4b5563;--bg:#fff;--sf:#f2f4f7;--sf2:#dfe3e9;--acc:#1a7a37;--acci:#fff;--r:8px}@media(prefers-color-scheme:dark){:root{--ink:#e6edf3;--mut:#9ca3af;--bg:#0d1117;--sf:#161b22;--sf2:#2a313b;--acc:#3fb950;--acci:#0d1117}}.ac{align-items:center}.an-fx{transition:background .15s,transform .12s,color .15s}.an-fx:active{transform:scale(.97)}.an-in{transition:opacity .35s,translate .35s;@starting-style{opacity:0;translate:0 -8px}}@supports(animation-timeline:view()){.an-rise{animation:ss-rise linear both;animation-timeline:view();animation-range:entry 0% entry 22%}}.an-spin{animation:ss-spin 1.4s cubic-bezier(.65,0,.35,1) infinite}.b{font-weight:700}.ba{background:var(--acc)}.bg{background:var(--bg)}.bs{background:var(--sf)}.bs2{background:var(--sf2)}.ci{color:var(--ink)}.cm{color:var(--mut)}.cw{color:var(--acci)}.f{display:flex}.fs0{flex-shrink:0}.fw{flex-wrap:wrap}.g2{gap:0.5rem}.g3{gap:0.75rem}.g4{gap:1rem}.g5{gap:1.5rem}.g7{gap:3rem}.g8{gap:4rem}.gr{display:grid}.gr>*{min-width:0}.hd{display:none}.ib{display:inline-block}.jb{justify-content:space-between}.mb4{margin-bottom:1rem}.md{font-weight:500}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.mt1{margin-top:0.25rem}.mt2{margin-top:0.5rem}.mt3{margin-top:0.75rem}.mt4{margin-top:1rem}.mt5{margin-top:1.5rem}.mt6{margin-top:2rem}.mt7{margin-top:3rem}.mx{margin-inline:auto}.nu{text-decoration:none}.nw{white-space:nowrap}.p4{padding:1rem}.p6{padding:2rem}.px3{padding-inline:0.75rem}.px4{padding-inline:1rem}.py2{padding-block:0.5rem}.py3{padding-block:0.75rem}.py4{padding-block:1rem}.py8{padding-block:4rem}.r{border-radius:var(--r)}.r2{border-radius:calc(var(--r)*2)}.sb{font-weight:600}.sy1>*+*{margin-top:0.25rem}.sy3>*+*{margin-top:0.75rem}.sy4>*+*{margin-top:1rem}.t1{font-size:0.875rem;line-height:1.5}.t3{font-size:1.125rem;line-height:1.5}.t4{font-size:1.25rem;line-height:1.5}.t5{font-size:1.5rem;line-height:1.5}.tn{font-variant-numeric:tabular-nums}.tt{letter-spacing:-.025em}.x{flex:1}@media(min-width:768px){.m-c2{grid-template-columns:repeat(2,minmax(0,1fr))}.m-ib{display:inline-block}}@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@keyframes ss-rise{from{transform:translateY(24px)}}@keyframes ss-spin{to{transform:rotateY(1turn)}}</style>
+  <style data-sscss>*,::before,::after{box-sizing:border-box;border:0 solid}body{margin:0;font:16px/1.5 ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}img,svg{max-width:100%;height:auto}:root{--ink:#0b0f14;--mut:#4b5563;--bg:#fff;--sf:#f2f4f7;--sf2:#dfe3e9;--acc:#1a7a37;--acci:#fff;--r:8px}@media(prefers-color-scheme:dark){:root{--ink:#e6edf3;--mut:#9ca3af;--bg:#0d1117;--sf:#161b22;--sf2:#2a313b;--acc:#3fb950;--acci:#0d1117}}.ac{align-items:center}.an-fx{transition:background .15s,transform .12s,color .15s}.an-fx:active{transform:scale(.97)}.an-in{transition:opacity .35s,translate .35s;@starting-style{opacity:0;translate:0 -8px}}@supports(animation-timeline:view()){.an-rise{animation:ss-rise linear both;animation-timeline:view();animation-range:entry 0% entry 22%}}.an-spin{animation:ss-spin 1.4s cubic-bezier(.65,0,.35,1) infinite}.b{font-weight:700}.ba{background:var(--acc)}.bg{background:var(--bg)}.bs{background:var(--sf)}.bs2{background:var(--sf2)}.ci{color:var(--ink)}.cm{color:var(--mut)}.cw{color:var(--acci)}.f{display:flex}.fs0{flex-shrink:0}.fw{flex-wrap:wrap}.g2{gap:0.5rem}.g3{gap:0.75rem}.g4{gap:1rem}.g5{gap:1.5rem}.g7{gap:3rem}.g8{gap:4rem}.gr{display:grid}.gr>*{min-width:0}.hd{display:none}.ib{display:inline-block}.jb{justify-content:space-between}.mb4{margin-bottom:1rem}.md{font-weight:500}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.mt1{margin-top:0.25rem}.mt2{margin-top:0.5rem}.mt3{margin-top:0.75rem}.mt4{margin-top:1rem}.mt5{margin-top:1.5rem}.mt6{margin-top:2rem}.mt7{margin-top:3rem}.mt8{margin-top:4rem}.mx{margin-inline:auto}.nu{text-decoration:none}.nw{white-space:nowrap}.p4{padding:1rem}.p6{padding:2rem}.px3{padding-inline:0.75rem}.px4{padding-inline:1rem}.py2{padding-block:0.5rem}.py3{padding-block:0.75rem}.py4{padding-block:1rem}.py8{padding-block:4rem}.r{border-radius:var(--r)}.r2{border-radius:calc(var(--r)*2)}.sb{font-weight:600}.sy1>*+*{margin-top:0.25rem}.sy3>*+*{margin-top:0.75rem}.sy4>*+*{margin-top:1rem}.t1{font-size:0.875rem;line-height:1.5}.t3{font-size:1.125rem;line-height:1.5}.t4{font-size:1.25rem;line-height:1.5}.t5{font-size:1.5rem;line-height:1.5}.tn{font-variant-numeric:tabular-nums}.tt{letter-spacing:-.025em}.x{flex:1}@media(min-width:768px){.m-c2{grid-template-columns:repeat(2,minmax(0,1fr))}.m-ib{display:inline-block}}@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@keyframes ss-rise{from{transform:translateY(24px)}}@keyframes ss-spin{to{transform:rotateY(1turn)}}</style>
 </head>
 <body>
 
 <header class="wrap mx f ac g4 py4">
-  <a href="/" class="t4 b tt nu x">simple-server</a>
+  <a href="/" class="t4 b tt nu x">server</a>
   <nav class="f ac g4 md nw" aria-label="Site">
     <a href="#does" class="nu hd m-ib">What it does</a>
     <a href="#pwa" class="nu hd m-ib">PWA</a>
@@ -109,27 +106,36 @@ npm start
       </div>
       <div class="r2 bs p6 an-rise">
         <p class="t4 b mb4">Ask this server something</p>
-        <p class="t1 mb4" data-show="static" hidden>This copy is on GitHub Pages, so the answers below are GitHub's. Clone it and <code>npm start</code> to ask simple-server itself.</p>
+        <p class="t1 mb4" data-show="static" hidden>This copy is on a static host, so the answers below are the host's. Under each one: what this server answers when you run it with <code>npm start</code>.</p>
         <label>Request
           <select data-model="path" id="path">
-            <option value="/">GET / — the app shell</option>
-            <option value="/about">GET /about — a client-side route</option>
-            <option value="/api/health">GET /api/health — JSON route</option>
-            <option value="/manifest.webmanifest">GET /manifest.webmanifest</option>
-            <option value="/android-chrome-192x192.png">GET /android-chrome-192x192.png</option>
-            <option value="/sw.js">GET /sw.js — the service worker</option>
-            <option value="/missing.png">GET /missing.png — not there</option>
-            <option value="/api/nothing">GET /api/nothing — unknown route</option>
-            <option value="/..%2f..%2fpackage.json">GET /..%2f..%2fpackage.json — traversal</option>
+            <option value="/" data-expect="200, the app shell">GET / — the app shell</option>
+            <option value="/about" data-expect="200, the app shell (SPA fallback)">GET /about — a client-side route</option>
+            <option value="/api/health" data-expect="200, JSON from the process">GET /api/health — JSON route</option>
+            <option value="/manifest.webmanifest" data-expect="200, application/manifest+json, no-cache">GET /manifest.webmanifest</option>
+            <option value="/android-chrome-192x192.png" data-expect="200, image/png, cached a day">GET /android-chrome-192x192.png</option>
+            <option value="/sw.js" data-expect="200, no-cache, so updates show at once">GET /sw.js — the service worker</option>
+            <option value="/missing.png" data-expect="404, the not-found page">GET /missing.png — not there</option>
+            <option value="/api/nothing" data-expect="404, never the app shell">GET /api/nothing — unknown route</option>
+            <option value="/..%2f..%2fpackage.json" data-expect="404, the path stays inside public/">GET /..%2f..%2fpackage.json — traversal</option>
           </select>
         </label>
         <p class="f ac g3 mt4"><button type="button" id="send" class="r bs2 ci px4 py2 an-fx btn" data-class="an-spin:busy">Send</button> <span class="t1 cm tn"><b data-watch="ms">–</b> ms</span></p>
         <div class="answer">
           <p class="t5 b tn mt4"><span data-watch="status">200</span> <span class="t3 md" data-watch="statusText">OK</span></p>
+          <p class="t1 mt1" data-show="static" hidden>With <code>npm start</code>: <b data-watch="expect">200, the app shell</b></p>
           <dl class="mt3 sy1 t1 mono">
-            <template data-each="headers">
-              <div class="f fw g2 an-in"><dt class="cm fs0" data-watch="$.name"></dt><dd data-watch="$.value"></dd></div>
-            </template>
+            <div class="f fw g2" data-show="h.server" hidden><dt class="cm fs0">server</dt><dd data-watch="h.server"></dd></div>
+            <div class="f fw g2" data-show="h.content-type"><dt class="cm fs0">content-type</dt><dd data-watch="h.content-type">text/html; charset=utf-8</dd></div>
+            <div class="f fw g2" data-show="h.cache-control"><dt class="cm fs0">cache-control</dt><dd data-watch="h.cache-control">no-cache</dd></div>
+            <div class="f fw g2" data-show="h.content-encoding"><dt class="cm fs0">content-encoding</dt><dd data-watch="h.content-encoding">br</dd></div>
+            <div class="f fw g2" data-show="h.vary"><dt class="cm fs0">vary</dt><dd data-watch="h.vary">Accept-Encoding</dd></div>
+            <div class="f fw g2" data-show="h.etag"><dt class="cm fs0">etag</dt><dd data-watch="h.etag">W/&quot;…&quot;</dd></div>
+            <div class="f fw g2" data-show="h.content-length" hidden><dt class="cm fs0">content-length</dt><dd data-watch="h.content-length"></dd></div>
+            <div class="f fw g2" data-show="h.x-content-type-options"><dt class="cm fs0">x-content-type-options</dt><dd data-watch="h.x-content-type-options">nosniff</dd></div>
+            <div class="f fw g2" data-show="h.x-frame-options"><dt class="cm fs0">x-frame-options</dt><dd data-watch="h.x-frame-options">SAMEORIGIN</dd></div>
+            <div class="f fw g2" data-show="h.allow" hidden><dt class="cm fs0">allow</dt><dd data-watch="h.allow"></dd></div>
+            <div class="f fw g2" data-show="h.location" hidden><dt class="cm fs0">location</dt><dd data-watch="h.location"></dd></div>
           </dl>
         </div>
       </div>
@@ -140,7 +146,7 @@ npm start
     <div class="wrap mx gr g8 m-c2 wr">
       <div class="sy4 an-rise">
         <h2>What a static host does.</h2>
-        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Seventeen tests over a real socket keep it honest: <code>npm test</code>.</p>
+        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Its tests run over a real socket: <code>npm test</code>.</p>
       </div>
       <dl class="gr g5 m-c2 an-rise">
         <div><dt class="sb">Safe paths</dt><dd class="t1 mt1">Every URL resolves inside <code>public/</code>. <code>../</code>, encoded dots, doubled slashes and dotfiles can't escape it; <code>/.well-known/</code> can.</dd></div>
@@ -159,16 +165,23 @@ npm start
 
   <section class="field" id="status">
     <div class="wrap mx">
-      <h2>Live, from this process.</h2>
-      <p class="t3 mt3">The page asks <code>/api/health</code> every ten seconds; Minim renders the answer.</p>
-      <p class="big b tn mt7"><span data-watch="requests">0</span></p>
-      <p class="t3 mt2">requests served since <span data-watch="started">it started</span></p>
-      <p class="t3 mt2" data-show="static" hidden>This copy is on a static host, so there is no process to ask. Run it locally to see it count.</p>
+      <h2>Measured in your browser.</h2>
+      <p class="t3 mt3">Not a claim: this page load, read from the Performance API and rendered by Minim. It holds on any host.</p>
+      <p class="big b tn mt7"><span data-watch="kb">–</span> KB</p>
+      <p class="t3 mt2">over the wire for the whole page: <span data-watch="raw">–</span> KB of HTML, <span data-watch="saved">–</span> smaller compressed<span data-show="viaSw" hidden> (the service worker answered this visit, so these sizes are from a fresh request)</span>.</p>
       <dl class="f fw g7 mt7">
-        <div><dt class="t1">Uptime</dt><dd class="t4 sb tn" data-watch="uptime">0s</dd></div>
-        <div><dt class="t1">Node</dt><dd class="t4 sb" data-watch="node">–</dd></div>
-        <div><dt class="t1">Server</dt><dd class="t4 sb" data-watch="live">connecting</dd></div>
+        <div><dt class="t1">JS, CSS and font requests</dt><dd class="t4 sb tn" data-watch="assets">0</dd></div>
+        <div><dt class="t1">First paint</dt><dd class="t4 sb tn" data-watch="fcp">–</dd></div>
+        <div><dt class="t1">Protocol</dt><dd class="t4 sb" data-watch="proto">–</dd></div>
       </dl>
+      <div data-show="proc" hidden>
+        <p class="t3 mt8">And from the process serving it, via <code>/api/health</code> every ten seconds:</p>
+        <dl class="f fw g7 mt5">
+          <div><dt class="t1">Requests served</dt><dd class="t4 sb tn" data-watch="requests">–</dd></div>
+          <div><dt class="t1">Uptime</dt><dd class="t4 sb tn" data-watch="uptime">–</dd></div>
+          <div><dt class="t1">Node</dt><dd class="t4 sb" data-watch="node">–</dd></div>
+        </dl>
+      </div>
     </div>
   </section>
 
@@ -211,9 +224,12 @@ npm run build        # site/ → public/ (this page, the service worker)</code><
         </div>
         <div class="sy4 an-rise">
           <p class="t4 b">Your agent</p>
-          <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server.</p>
+          <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server. And the server speaks MCP: started with <code>MCP=1</code>, an agent can list and read what it serves and see exactly how it answers any path.</p>
           <pre class="r bg p4"><code>npx skills add hertonwork/server
-npm run check        # tests + preflight (+ Lighthouse when installed)</code></pre>
+npm run check        # tests + preflight (+ Lighthouse)
+MCP=1 npm start
+claude mcp add --transport http server \
+  http://127.0.0.1:2211/mcp</code></pre>
         </div>
       </div>
     </div>
@@ -232,18 +248,20 @@ const $ = (id) => document.getElementById(id);
 const probe = { 'x-probe': '1' };
 
 const status = (c) => ({ 200: 'OK', 301: 'Moved Permanently', 304: 'Not Modified', 400: 'Bad Request', 404: 'Not Found', 405: 'Method Not Allowed', 500: 'Internal Server Error' })[c] || '';
-const shown = ['content-type', 'cache-control', 'content-encoding', 'vary', 'etag', 'content-length', 'x-content-type-options', 'x-frame-options', 'allow', 'location'];
+const shown = ['server', 'content-type', 'cache-control', 'content-encoding', 'vary', 'etag', 'content-length', 'x-content-type-options', 'x-frame-options', 'allow', 'location'];
 async function send() {
 app.busy = true;
+app.expect = $('path').selectedOptions[0]?.dataset.expect || '';   // what `npm start` answers, shown on static hosts
 const t0 = performance.now();
 try {
 const r = await fetch(app.path, { headers: { ...probe, Accept: 'text/html,*/*' }, cache: 'no-store', redirect: 'manual' });
 await r.arrayBuffer();
 app.status = String(r.status || 0);
 app.statusText = r.status ? r.statusText || status(r.status) : r.type === 'opaqueredirect' ? 'redirect' : '';
-app.headers = shown.filter((h) => r.headers.has(h)).map((h) => ({ name: h, value: r.headers.get(h) }));
+for (const h of shown) app.h[h] = r.headers.get(h) || '';
 } catch {
-app.status = '0'; app.statusText = 'network error'; app.headers = [];
+app.status = '0'; app.statusText = 'network error';
+for (const h of shown) app.h[h] = '';
 }
 app.ms = String(Math.round(performance.now() - t0));
 app.busy = false;
@@ -251,7 +269,31 @@ app.busy = false;
 $('send').addEventListener('click', send);
 $('path').addEventListener('change', send);
 
+const kb = (b) => (b / 1024).toFixed(1);
+const protocols = { h3: 'HTTP/3', h2: 'HTTP/2', 'http/1.1': 'HTTP/1.1', 'http/1.0': 'HTTP/1.0' };
+function measure() {
+const nav = performance.getEntriesByType('navigation')[0];
+let e = nav && nav.workerStart === 0 && nav.encodedBodySize ? nav : null;
+app.viaSw = !e;
+e ||= performance.getEntriesByType('resource').filter((r) => r.initiatorType === 'fetch' && new URL(r.name).pathname === '/' && r.encodedBodySize).pop();
+if (!e) return;
+const raw = e.decodedBodySize, wire = e.encodedBodySize;
+app.kb = kb(wire);
+app.raw = kb(raw);
+app.saved = wire < raw ? `${Math.round((1 - wire / raw) * 100)}%` : 'not';
+app.assets = String(performance.getEntriesByType('resource')
+.filter((r) => r.initiatorType !== 'fetch' && r.initiatorType !== 'xmlhttprequest' && /\.(m?js|css|woff2?|ttf|otf)(\?|$)/.test(new URL(r.name).pathname)).length);
+app.proto = protocols[(nav || e).nextHopProtocol] || (nav || e).nextHopProtocol || '–';
+}
+try {
+new PerformanceObserver((list, obs) => {
+const fcp = list.getEntriesByName('first-contentful-paint')[0];
+if (fcp) { app.fcp = `${Math.round(fcp.startTime)} ms`; obs.disconnect(); }
+}).observe({ type: 'paint', buffered: true });
+} catch { /* no paint timing: stays – */ }
+
 const span = (s) => s < 60 ? `${s}s` : s < 3600 ? `${s / 60 | 0}m ${s % 60}s` : s < 86400 ? `${s / 3600 | 0}h ${(s % 3600) / 60 | 0}m` : `${s / 86400 | 0}d ${(s % 86400) / 3600 | 0}h`;
+let polling = null;
 async function health() {
 try {
 const r = await fetch('/api/health', { headers: probe, cache: 'no-store' });
@@ -260,14 +302,12 @@ const h = await r.json();
 app.requests = h.requests.toLocaleString();
 app.uptime = span(h.uptime);
 app.node = h.node;
-app.started = new Date(h.started).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
-app.live = 'up'; app.static = false;
+app.proc = true; app.static = false;
+polling ??= setInterval(() => { if (!document.hidden) health(); }, 10_000);
 } catch {
-app.live = 'none (static host)'; app.static = true;
+app.proc = false; app.static = true;   // nothing to poll: a static host has no process
 }
 }
-const tick = () => { if (!document.hidden) health(); };
-setInterval(tick, 10_000);
 
 const online = () => { app.network = navigator.onLine ? 'online' : 'offline'; };
 addEventListener('online', online); addEventListener('offline', online); online();
@@ -301,7 +341,7 @@ navigator.serviceWorker?.addEventListener('controllerchange', () => { if (swappi
 $('reload').addEventListener('click', () => { swapping = true; reg?.waiting?.postMessage('skip'); });
 $('update').addEventListener('click', async () => { app.sw = 'checking'; await reg?.update(); app.sw = reg?.active ? 'active' : app.sw; });
 
-addEventListener('load', () => (self.requestIdleCallback || setTimeout)(() => { send(); health(); worker(); }));
+addEventListener('load', () => (self.requestIdleCallback || setTimeout)(() => { send().then(measure); health(); worker(); }));
 })();</script>
 </body>
 </html>

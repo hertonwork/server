@@ -5,6 +5,7 @@
 //   HOST=127.0.0.1     bind address; use 0.0.0.0 in a container or to reach it from another machine
 //   PUBLIC_DIR=public  folder to serve
 //   VERBOSE=1          log one line per request
+//   MCP=1              answer MCP clients (coding agents) at /mcp: claude mcp add --transport http server http://127.0.0.1:2211/mcp
 //   TLS_KEY / TLS_CERT paths to a key and certificate; when both exist the server speaks HTTPS.
 //                      Defaults to ./key.pem and ./cert.pem when they are present (`npm run cert` makes a localhost pair).
 //                      Behind nginx or Caddy leave them out: the proxy terminates TLS and this stays plain HTTP.
@@ -15,7 +16,9 @@ const env = process.env;
 const port = Number(env.PORT) || 2211;
 const host = env.HOST || '127.0.0.1';
 const publicDir = env.PUBLIC_DIR || 'public';
-const verbose = /^(1|true|yes)$/i.test(env.VERBOSE || '');
+const on = (v) => /^(1|true|yes)$/i.test(v || '');
+const verbose = on(env.VERBOSE);
+const mcp = on(env.MCP);
 
 const keyFile = env.TLS_KEY || 'key.pem';
 const certFile = env.TLS_CERT || 'cert.pem';
@@ -28,10 +31,12 @@ if (!fs.existsSync(publicDir)) {
   process.exit(1);
 }
 
-const server = createServer({ publicDir, verbose, tls });
+const server = createServer({ publicDir, verbose, tls, mcp });
 
 server.listen(port, host, () => {
-  console.info(`simple-server  ${tls ? 'https' : 'http'}://${host}:${port}  serving ./${publicDir}${verbose ? '  (verbose)' : ''}`);
+  const base = `${tls ? 'https' : 'http'}://${host}:${port}`;
+  console.info(`simple-server  ${base}  serving ./${publicDir}${verbose ? '  (verbose)' : ''}`);
+  if (mcp) console.info(`mcp            ${base}/mcp  →  claude mcp add --transport http server ${base}/mcp`);
 });
 
 server.on('error', (err) => {

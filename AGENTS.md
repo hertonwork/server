@@ -10,7 +10,8 @@ verifies everything.
 |---|---|---|
 | `lib/simple-server.js` | the server: `createHandler(options)` and `createServer(options)`. Path safety, MIME, caching, ETags, compression, ranges, SPA fallback, routes, errors. Options and defaults at the top | yes — add a test in the same change |
 | `server.js` | the entry point: reads `PORT`, `HOST`, `PUBLIC_DIR`, `VERBOSE`, `TLS_KEY`/`TLS_CERT`, starts the server, shuts down cleanly | yes |
-| `test/server.test.mjs` | `node:test` over a real socket against a temporary `public/`; raw `http` where `fetch()` would hide something (compression, odd URLs) | yes |
+| `lib/mcp.js` | the MCP endpoint (`mcp: true` / `MCP=1`): POST /mcp, Streamable HTTP, stateless, both protocol eras (2026-07-28 `server/discover`; 2025-11-25…03-26 `initialize`), four read-only tools that go through the server's own `resolve()` and handler | yes — add a test in the same change |
+| `test/server.test.mjs`, `test/mcp.test.mjs` | `node:test` over a real socket against a temporary `public/`; raw `http` where `fetch()` would hide something (compression, odd URLs); the MCP suite speaks both eras | yes |
 | `public/` | what is served. `index.html`, `404.html` and `sw.js` are **built** from `site/`; everything else (manifest, icons, screenshots, robots) is a plain asset | built files: no — `npm run build`. Assets: yes |
 | `site/index.html`, `site/404.html` | the page templates: sscss classes, Minim bindings, the state JSON, two slots at the end of the body (`<!--minim-->`, `<!--app-->`) | yes |
 | `site/app.js` | the page's own script: the request inspector, the `/api/health` poll, the PWA plumbing (install, update prompt, offline) | yes |
@@ -32,6 +33,7 @@ npm run build           # site/ → public/ (index.html, 404.html, sw.js)
 npm run check           # tests + build + preflight + Lighthouse (if `lighthouse` is on PATH; CHROME_PATH if Chrome isn't found)
 npm run check -- --no-lighthouse
 npm run cert            # self-signed localhost pair → the next `npm start` is https
+npm run mcp             # serve with the MCP endpoint on; then: claude mcp add --transport http server http://127.0.0.1:2211/mcp
 npm run vendor          # refresh vendor/ from the Minim and sscss repositories
 npm run shots           # manifest screenshots + preview.jpg (Playwright)
 npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + ImageMagick)
@@ -45,6 +47,10 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
 - **Nothing outside `public/` is ever served.** Every path goes through `resolve()` in `lib/simple-server.js`, and the
   traversal test lists the ways people try. A new way of naming a file (a new decoding, a new separator) gets a case
   there before it gets a fix.
+- **The MCP endpoint is opt-in and read-only.** Its tools reach files only through `resolve()` and responses only
+  through the handler, so they never see more than a browser could; no tool writes or executes. Both protocol eras
+  keep working (Claude Code speaks 2026-07-28, the TypeScript SDK 1.x speaks 2025-11-25); `test/mcp.test.mjs` covers
+  each, and a change to the endpoint is checked with a real client before it ships.
 - **The server never crashes on input.** A malformed URL is a 400, a missing file a 404, an unexpected error a 500 —
   logged when `VERBOSE`, never thrown out of the handler. The vanishing-file test exists for this.
 - **The page is one file, 100/100/100/100, and the build keeps it so.** No external JS, CSS or fonts; initial state

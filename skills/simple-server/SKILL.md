@@ -6,7 +6,7 @@ description: >-
   /api/health) and ship it as an installable PWA with a versioned service worker, all scoring 100/100/100/100 on
   Lighthouse. Use this whenever someone needs to serve a built SPA or static folder with Node and nothing to install,
   wants a static server "without express", needs SPA fallback / history-mode routing on a plain server, wants a service
-  worker with precache, offline shell and an update prompt, or is working inside the hertonwork/server
+  worker with precache, offline shell and an update prompt, wants an MCP endpoint so an agent can inspect a running site, or is working inside the hertonwork/server
   repository. Pairs with the minim-page and sscss skills for the page itself.
 ---
 
@@ -67,6 +67,18 @@ createServer({
   `HEAD`; `405` for other methods; `301` for a directory without a trailing slash; `400` for malformed URLs.
 - `GET /api/health` → `{ ok, started, uptime, requests, node }` for a load balancer or a status panel.
 
+### Let an agent ask the running server (MCP)
+
+```sh
+MCP=1 npm start
+claude mcp add --transport http server http://127.0.0.1:2211/mcp
+```
+
+Four read-only tools: `health`, `list_files`, `read_file`, `inspect` (status, headers and the start of the body for
+any path, run through the server's own handler). Use `inspect` instead of guessing how a path is answered: the SPA
+fallback, cache headers, compression and 404s are all visible in one call. `lib/mcp.js` is a dependency-free example
+of an MCP server over Streamable HTTP that speaks both protocol eras; copy it as a starting point for tools of your own.
+
 ## 2. Build a page for it
 
 The bundled page is the reference. It is built from `site/` by `scripts/build.mjs` with three vendored files in
@@ -113,7 +125,7 @@ the server's, not Pages'). The server itself runs wherever `npm start` runs.
 
 ## 3. Checklist before a PR
 
-- `npm run check` is green (17 server tests, preflight `ok`, Lighthouse 100 ×4 mobile and desktop)
+- `npm run check` is green (server and MCP tests, preflight `ok`, Lighthouse 100 ×4 mobile and desktop)
 - `public/` is the result of `npm run build` from the committed `site/` (CI diffs them)
 - New server behaviour has a test in `test/server.test.mjs`; new ways of naming a path are in the traversal case
 - No `dependencies`, no `devDependencies`, no `<script src>`, no `<link rel="stylesheet">`, no web font

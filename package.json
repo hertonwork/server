@@ -26,15 +26,16 @@
     "check": "node scripts/check.mjs",
     "vendor": "node scripts/vendor.mjs",
     "shots": "node scripts/shots.mjs",
-    "cert": "openssl req -x509 -newkey rsa:2048 -nodes -days 825 -keyout key.pem -out cert.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1"
+    "cert": "openssl req -x509 -newkey rsa:2048 -nodes -days 825 -keyout key.pem -out cert.pem -subj /CN=localhost -addext subjectAltName=DNS:localhost,IP:127.0.0.1",
+    "fireworks": "node scripts/fireworks.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hertonwork/simple-server.git"
+    "url": "git+https://github.com/hertonwork/server.git"
   },
-  "homepage": "https://github.com/hertonwork/simple-server#readme",
+  "homepage": "https://server.herton.work",
   "bugs": {
-    "url": "https://github.com/hertonwork/simple-server/issues"
+    "url": "https://github.com/hertonwork/server/issues"
   },
   "keywords": [
     "static-server",

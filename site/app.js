@@ -39,7 +39,7 @@
       app.started = new Date(h.started).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
       app.live = 'up'; app.static = false;
     } catch {
-      app.live = 'unreachable'; app.static = true;
+      app.live = 'none (static host)'; app.static = true;
     }
   }
   const tick = () => { if (!document.hidden) health(); };

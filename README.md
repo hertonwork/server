@@ -10,14 +10,17 @@ A static web server for a single-page app, in one Node file, with nothing to ins
 * **Agent friendly** — `AGENTS.md`, a skill, one command that verifies everything.
 
 <p align="center">
-<img src="public/preview.jpg" alt="The bundled page: a request inspector that asks the server about itself" width="700">
+<img src="public/lighthouse.gif" alt="Lighthouse: 100 Performance, 100 Accessibility, 100 Best Practices, 100 SEO — with fireworks" width="800">
 </p>
+
+Live at **[server.herton.work](https://server.herton.work)** — that copy is GitHub Pages serving `public/`, so the
+live-status panel says so; clone it and `npm start` to see the server itself answer.
 
 ## Run it
 
 ```sh
-git clone https://github.com/hertonwork/simple-server.git
-cd simple-server
+git clone https://github.com/hertonwork/server.git
+cd server
 npm start            # → http://127.0.0.1:2211
 ```
 
@@ -100,7 +103,11 @@ classes; the build generates exactly the rules the page uses, 2.5 KB) and [Minim
 npm run build        # site/ → public/index.html, public/404.html, public/sw.js
 npm run check        # + preflight + Lighthouse (npm i -g lighthouse; CHROME_PATH if Chrome isn't found)
 npm run vendor       # refresh vendor/ (Minim, the sscss generator, the preflight) from their repositories
+npm run shots        # manifest screenshots + preview.jpg from the running server (Playwright)
+npm run fireworks    # the Lighthouse report's fireworks as public/lighthouse.gif (Playwright + ImageMagick)
 ```
+
+Every push to `main` publishes `public/` to GitHub Pages (`.github/workflows/pages.yml`).
 
 ## The PWA
 
@@ -120,7 +127,7 @@ The repository is laid out to be worked on by coding agents as much as by people
 * [`AGENTS.md`](AGENTS.md) — the layout, the commands, and the rules that keep the project what it is (zero
   dependencies, nothing served outside `public/`, never a crash, the page stays at 100).
 * [`skills/simple-server/`](skills/simple-server/SKILL.md) — a skill that teaches an agent to serve a project with it
-  and to build and verify a page the way the bundled one was built. `npx skills add hertonwork/simple-server`.
+  and to build and verify a page the way the bundled one was built. `npx skills add hertonwork/server`.
 * `npm run check` — tests, build, preflight and Lighthouse in one command, the same thing CI runs.
 
 ## License

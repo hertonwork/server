@@ -18,7 +18,8 @@ verifies everything.
 | `scripts/build.mjs` | `site/` → `public/`: inlines Minim and `app.js`, generates the sscss block for each page, versions the service worker | yes |
 | `scripts/check.mjs` | the whole verification: tests, build (fails in CI when `public/` is stale), preflight, Lighthouse against this server | yes |
 | `scripts/vendor.mjs`, `vendor/` | the three vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker). Refresh with `npm run vendor` | vendored files: no, refresh them |
-| `scripts/shots.mjs` | manifest screenshots and the README preview, from this server (needs Playwright; dev-only) | yes |
+| `scripts/shots.mjs`, `scripts/fireworks.mjs` | manifest screenshots + `preview.jpg`, and the Lighthouse fireworks GIF, both from this server (need Playwright, the GIF also `lighthouse` and ImageMagick; dev-only) | yes |
+| `.github/workflows/ci.yml`, `pages.yml` | CI runs `npm run check` on every PR; Pages publishes `public/` to server.herton.work on every push to `main` | yes |
 | `skills/simple-server/` | the agent skill: how to use this server for a project and how to build and verify a page the way this one was | yes |
 
 ## Commands
@@ -32,6 +33,8 @@ npm run check           # tests + build + preflight + Lighthouse (if `lighthouse
 npm run check -- --no-lighthouse
 npm run cert            # self-signed localhost pair → the next `npm start` is https
 npm run vendor          # refresh vendor/ from the Minim and sscss repositories
+npm run shots           # manifest screenshots + preview.jpg (Playwright)
+npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + ImageMagick)
 ```
 
 ## Rules that keep this project what it is
@@ -57,12 +60,15 @@ npm run vendor          # refresh vendor/ from the Minim and sscss repositories
 - **Design as a decision.** Large type in the system font, sections that each have their own composition, surfaces
   separated by a tone step, no gradients, hairlines or emoji in content, one accent action per screen. The rules are
   `references/design.md` in the Minim page skill; the page follows them.
+- **server.herton.work is GitHub Pages, not this server.** It serves `public/` statically, so there `/api/health` is a
+  404 and the page shows its static-host notes (that is by design — don't "fix" them away). Headers, compression, the
+  SPA fallback and the routes are only seen where `npm start` runs; measure those locally with `npm run check`.
 - Commits are plain; PRs explain what changed and why in the body.
 
 ## Using this server for your own app
 
 Replace `public/` with your build (keep `404.html` if you want a styled not-found page) and `npm start`. For a page in
 the same style as the bundled one — sscss classes, Minim bindings, a generated stylesheet, Lighthouse 100 — use the
-skill in `skills/simple-server/` (`npx skills add hertonwork/simple-server`), which hands off to the
+skill in `skills/simple-server/` (`npx skills add hertonwork/server`), which hands off to the
 [minim-page](https://github.com/hertonwork/minim/tree/main/skills/minim-page) and
 [sscss](https://github.com/hertonwork/sscss/tree/main/skills/sscss) skills for the page itself.

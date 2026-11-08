@@ -8,9 +8,19 @@
   <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
   <title>simple-server — a static server for a single-page app, in one Node file</title>
   <meta name="description" content="A zero-dependency Node web server for a single-page app: safe paths, brotli, caching, SPA fallback, PWA. Run npm start and you're serving. 100/100 Lighthouse out of the box.">
+  <link rel="canonical" href="https://server.herton.work/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="simple-server">
+  <meta property="og:title" content="simple-server — one file, zero dependencies, 100/100 Lighthouse">
+  <meta property="og:description" content="A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA. Nothing to install.">
+  <meta property="og:url" content="https://server.herton.work/">
+  <meta property="og:image" content="https://server.herton.work/preview.jpg">
+  <meta property="og:image:width" content="1000">
+  <meta property="og:image:height" content="625">
+  <meta name="twitter:card" content="summary_large_image">
 
   <!-- This page is the server's demo and the shell your app replaces. It is built from site/ by `npm run build`:
        the classes are sscss (vendor/sscss.mjs generates exactly the rules used into a data-sscss style block at the end
@@ -79,7 +89,7 @@
     <a href="#does" class="nu hd m-ib">What it does</a>
     <a href="#pwa" class="nu hd m-ib">PWA</a>
     <a href="#yours" class="nu hd m-ib">Make it yours</a>
-    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="https://github.com/hertonwork/simple-server">GitHub</a>
+    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="https://github.com/hertonwork/server">GitHub</a>
   </nav>
 </header>
 
@@ -90,14 +100,15 @@
       <div class="an-rise">
         <h1>One file. Zero dependencies.</h1>
         <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: clone it and start it.</p>
-        <pre class="r bs p4 mt6"><code>git clone https://github.com/hertonwork/simple-server.git
-cd simple-server
+        <pre class="r bs p4 mt6"><code>git clone https://github.com/hertonwork/server.git
+cd server
 npm start
 # → http://127.0.0.1:2211</code></pre>
-        <p class="f fw g2 mt6"><a class="r ba cw px4 py3 nu sb ib an-fx" href="https://github.com/hertonwork/simple-server">View on GitHub</a> <a class="r bs2 ci px4 py3 nu sb ib an-fx btn" href="#does">What it does</a></p>
+        <p class="f fw g2 mt6"><a class="r ba cw px4 py3 nu sb ib an-fx" href="https://github.com/hertonwork/server">View on GitHub</a> <a class="r bs2 ci px4 py3 nu sb ib an-fx btn" href="#does">What it does</a></p>
       </div>
       <div class="r2 bs p6 an-rise">
         <p class="t4 b mb4">Ask this server something</p>
+        <p class="t1 mb4" data-show="static" hidden>This copy is on GitHub Pages, so the answers below are GitHub's. Clone it and <code>npm start</code> to ask simple-server itself.</p>
         <label>Request
           <select data-model="path" id="path">
             <option value="/">GET / — the app shell</option>
@@ -128,7 +139,7 @@ npm start
     <div class="wrap mx gr g8 m-c2 wr">
       <div class="sy4 an-rise">
         <h2>What a static host does.</h2>
-        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/simple-server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Seventeen tests over a real socket keep it honest: <code>npm test</code>.</p>
+        <p>Everything a good static host does and a bare <code>http.createServer</code> doesn't. Two hundred lines, read in ten minutes: <a href="https://github.com/hertonwork/server/blob/main/lib/simple-server.js">lib/simple-server.js</a>. Seventeen tests over a real socket keep it honest: <code>npm test</code>.</p>
       </div>
       <dl class="gr g5 m-c2 an-rise">
         <div><dt class="sb">Safe paths</dt><dd class="t1 mt1">Every URL resolves inside <code>public/</code>. <code>../</code>, encoded dots, doubled slashes and dotfiles can't escape it; <code>/.well-known/</code> can.</dd></div>
@@ -200,7 +211,7 @@ npm run build        # site/ → public/ (this page, the service worker)</code><
         <div class="sy4 an-rise">
           <p class="t4 b">Your agent</p>
           <p>The repository is laid out for coding agents as much as for people. <code>AGENTS.md</code> explains the layout, the rules and the commands; <code>skills/simple-server</code> teaches an agent to build and verify a page the way this one was built; <code>npm run check</code> is the whole verification — tests, a static preflight of the pages, Lighthouse against the real server.</p>
-          <pre class="r bg p4"><code>npx skills add hertonwork/simple-server
+          <pre class="r bg p4"><code>npx skills add hertonwork/server
 npm run check        # tests + preflight (+ Lighthouse when installed)</code></pre>
         </div>
       </div>

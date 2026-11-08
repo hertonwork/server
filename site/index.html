@@ -28,8 +28,6 @@
        the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
   <style>
     html { scroll-behavior: smooth; }
-    /* Minim's data-show toggles `hidden`; a display utility (f, bk, ib…) would otherwise win over the browser's [hidden] rule */
-    [hidden] { display: none !important; }
     body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-underline-offset: .15em; }
     h1, h2 { margin: 0; letter-spacing: -0.025em; line-height: 1.02; text-wrap: balance; }
@@ -52,6 +50,12 @@
     .field code { background: rgb(255 255 255 / .14); }
     @media (prefers-color-scheme: dark) { .field { background: #1a7a37; } }
     .big { font-size: clamp(4rem, 12vw, 9rem); letter-spacing: -0.04em; line-height: 1; }
+    /* the hero's traffic: a band of lanes at the bottom (shader-hero, inlined at the end of the body; GPUs only) */
+    /* the band is the padding plus a little: its horizon (16% from its top) lands just below the content at every width */
+    .hero { padding-bottom: clamp(200px, 24vw, 320px); }
+    .traffic { position: absolute; inset: auto 0 0 0; width: 100%; height: clamp(236px, 28vw, 372px); pointer-events: none; opacity: 0; transition: opacity 1.4s;
+               -webkit-mask-image: linear-gradient(transparent, #000 30%); mask-image: linear-gradient(transparent, #000 30%); }
+    .traffic.on { opacity: 1; }
 
     button { font: inherit; font-weight: 600; cursor: pointer; line-height: 1.3; }
     .btn:hover { background: color-mix(in srgb, var(--sf2), var(--ink) 10%); }
@@ -89,23 +93,23 @@
 <header class="wrap mx f ac g4 py4">
   <a href="/" class="t4 b tt nu x">server</a>
   <nav class="f ac g4 md nw" aria-label="Site">
-    <a href="#does" class="nu hd m-ib">What it does</a>
-    <a href="#pwa" class="nu hd m-ib">PWA</a>
-    <a href="#yours" class="nu hd m-ib">Make it yours</a>
-    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="https://github.com/hertonwork/server">GitHub</a>
+    <a href="https://github.com/hertonwork/server" class="nu">GitHub</a>
+    <a href="https://www.npmjs.com/package/@labs_kai/server" class="nu">npm</a>
+    <a href="https://minim.herton.work/" class="nu hd m-ib">Minim</a>
+    <a href="https://sscss.herton.work/" class="nu hd m-ib">sscss</a>
+    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="#yours">Run it</a>
   </nav>
 </header>
 
 <main id="root">
 
-  <section>
-    <div class="wrap mx gr g8 m-c2 wl">
+  <section class="rel oh hero">
+    <canvas class="traffic" aria-hidden="true"></canvas>
+    <div class="wrap mx gr g8 m-c2 wl rel">
       <div class="an-rise">
         <h1>One file. Zero dependencies.</h1>
-        <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: clone it and start it.</p>
-        <pre class="r bs p4 mt6"><code>git clone https://github.com/hertonwork/server.git
-cd server
-npm start
+        <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: one command serves any folder.</p>
+        <pre class="r bs p4 mt6"><code>npx @labs_kai/server dist
 # → http://127.0.0.1:2211</code></pre>
         <p class="f fw g2 mt6"><a class="r ba cw px4 py3 nu sb ib an-fx" href="https://github.com/hertonwork/server">View on GitHub</a> <a class="r bs2 ci px4 py3 nu sb ib an-fx btn" href="#does">What it does</a></p>
       </div>
@@ -251,5 +255,6 @@ claude mcp add --transport http server \
 
 <script><!--minim--></script>
 <script><!--app--></script>
+<script><!--shader--></script>
 </body>
 </html>

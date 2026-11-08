@@ -28,8 +28,6 @@
        the few lines of page-own CSS are the next block. No request for JS, CSS or fonts. -->
   <style>
     html { scroll-behavior: smooth; }
-    /* Minim's data-show toggles `hidden`; a display utility (f, bk, ib…) would otherwise win over the browser's [hidden] rule */
-    [hidden] { display: none !important; }
     body { font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-underline-offset: .15em; }
     h1, h2 { margin: 0; letter-spacing: -0.025em; line-height: 1.02; text-wrap: balance; }
@@ -52,6 +50,12 @@
     .field code { background: rgb(255 255 255 / .14); }
     @media (prefers-color-scheme: dark) { .field { background: #1a7a37; } }
     .big { font-size: clamp(4rem, 12vw, 9rem); letter-spacing: -0.04em; line-height: 1; }
+    /* the hero's traffic: a band of lanes at the bottom (shader-hero, inlined at the end of the body; GPUs only) */
+    /* the band is the padding plus a little: its horizon (16% from its top) lands just below the content at every width */
+    .hero { padding-bottom: clamp(200px, 24vw, 320px); }
+    .traffic { position: absolute; inset: auto 0 0 0; width: 100%; height: clamp(236px, 28vw, 372px); pointer-events: none; opacity: 0; transition: opacity 1.4s;
+               -webkit-mask-image: linear-gradient(transparent, #000 30%); mask-image: linear-gradient(transparent, #000 30%); }
+    .traffic.on { opacity: 1; }
 
     button { font: inherit; font-weight: 600; cursor: pointer; line-height: 1.3; }
     .btn:hover { background: color-mix(in srgb, var(--sf2), var(--ink) 10%); }
@@ -83,30 +87,30 @@
       "sw": "checking", "cache": "–", "network": "online", "installed": "no", "canInstall": false, "updateReady": false
     }
   </script>
-  <style data-sscss>*,::before,::after{box-sizing:border-box;border:0 solid}body{margin:0;font:16px/1.5 ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}img,svg{max-width:100%;height:auto}:root{--ink:#0b0f14;--mut:#4b5563;--bg:#fff;--sf:#f2f4f7;--sf2:#dfe3e9;--acc:#1a7a37;--acci:#fff;--r:8px}@media(prefers-color-scheme:dark){:root{--ink:#e6edf3;--mut:#9ca3af;--bg:#0d1117;--sf:#161b22;--sf2:#2a313b;--acc:#3fb950;--acci:#0d1117}}.ac{align-items:center}.an-fx{transition:background .15s,transform .12s,color .15s}.an-fx:active{transform:scale(.97)}.an-in{transition:opacity .35s,translate .35s;@starting-style{opacity:0;translate:0 -8px}}@supports(animation-timeline:view()){.an-rise{animation:ss-rise linear both;animation-timeline:view();animation-range:entry 0% entry 22%}}.an-spin{animation:ss-spin 1.4s cubic-bezier(.65,0,.35,1) infinite}.b{font-weight:700}.ba{background:var(--acc)}.bg{background:var(--bg)}.bs{background:var(--sf)}.bs2{background:var(--sf2)}.ci{color:var(--ink)}.cm{color:var(--mut)}.cw{color:var(--acci)}.f{display:flex}.fs0{flex-shrink:0}.fw{flex-wrap:wrap}.g2{gap:0.5rem}.g3{gap:0.75rem}.g4{gap:1rem}.g5{gap:1.5rem}.g7{gap:3rem}.g8{gap:4rem}.gr{display:grid}.gr>*{min-width:0}.hd{display:none}.ib{display:inline-block}.jb{justify-content:space-between}.mb4{margin-bottom:1rem}.md{font-weight:500}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.mt1{margin-top:0.25rem}.mt2{margin-top:0.5rem}.mt3{margin-top:0.75rem}.mt4{margin-top:1rem}.mt5{margin-top:1.5rem}.mt6{margin-top:2rem}.mt7{margin-top:3rem}.mt8{margin-top:4rem}.mx{margin-inline:auto}.nu{text-decoration:none}.nw{white-space:nowrap}.p4{padding:1rem}.p6{padding:2rem}.px3{padding-inline:0.75rem}.px4{padding-inline:1rem}.py2{padding-block:0.5rem}.py3{padding-block:0.75rem}.py4{padding-block:1rem}.py8{padding-block:4rem}.r{border-radius:var(--r)}.r2{border-radius:calc(var(--r)*2)}.sb{font-weight:600}.sy1>*+*{margin-top:0.25rem}.sy3>*+*{margin-top:0.75rem}.sy4>*+*{margin-top:1rem}.t1{font-size:0.875rem;line-height:1.5}.t3{font-size:1.125rem;line-height:1.5}.t4{font-size:1.25rem;line-height:1.5}.t5{font-size:1.5rem;line-height:1.5}.tn{font-variant-numeric:tabular-nums}.tt{letter-spacing:-.025em}.x{flex:1}@media(min-width:768px){.m-c2{grid-template-columns:repeat(2,minmax(0,1fr))}.m-ib{display:inline-block}}@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@keyframes ss-rise{from{transform:translateY(24px)}}@keyframes ss-spin{to{transform:rotateY(1turn)}}</style>
+  <style data-sscss>*,::before,::after{box-sizing:border-box;border:0 solid}body{margin:0;font:16px/1.5 ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}img,svg{max-width:100%;height:auto}:root{--ink:#0b0f14;--mut:#4b5563;--bg:#fff;--sf:#f2f4f7;--sf2:#dfe3e9;--acc:#1a7a37;--acci:#fff;--r:8px}@media(prefers-color-scheme:dark){:root{--ink:#e6edf3;--mut:#9ca3af;--bg:#0d1117;--sf:#161b22;--sf2:#2a313b;--acc:#3fb950;--acci:#0d1117}}.ac{align-items:center}.an-fx{transition:background .15s,transform .12s,color .15s}.an-fx:active{transform:scale(.97)}.an-in{transition:opacity .35s,translate .35s;@starting-style{opacity:0;translate:0 -8px}}@supports(animation-timeline:view()){.an-rise{animation:ss-rise linear both;animation-timeline:view();animation-range:entry 0% entry 22%}}.an-spin{animation:ss-spin 1.4s cubic-bezier(.65,0,.35,1) infinite}.b{font-weight:700}.ba{background:var(--acc)}.bg{background:var(--bg)}.bs{background:var(--sf)}.bs2{background:var(--sf2)}.ci{color:var(--ink)}.cm{color:var(--mut)}.cw{color:var(--acci)}.f{display:flex}.fs0{flex-shrink:0}.fw{flex-wrap:wrap}.g2{gap:0.5rem}.g3{gap:0.75rem}.g4{gap:1rem}.g5{gap:1.5rem}.g7{gap:3rem}.g8{gap:4rem}.gr{display:grid}.gr>*{min-width:0}.hd{display:none}.ib{display:inline-block}.jb{justify-content:space-between}.mb4{margin-bottom:1rem}.md{font-weight:500}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.mt1{margin-top:0.25rem}.mt2{margin-top:0.5rem}.mt3{margin-top:0.75rem}.mt4{margin-top:1rem}.mt5{margin-top:1.5rem}.mt6{margin-top:2rem}.mt7{margin-top:3rem}.mt8{margin-top:4rem}.mx{margin-inline:auto}.nu{text-decoration:none}.nw{white-space:nowrap}.oh{overflow:hidden}.p4{padding:1rem}.p6{padding:2rem}.px3{padding-inline:0.75rem}.px4{padding-inline:1rem}.py2{padding-block:0.5rem}.py3{padding-block:0.75rem}.py4{padding-block:1rem}.py8{padding-block:4rem}.r{border-radius:var(--r)}.r2{border-radius:calc(var(--r)*2)}.rel{position:relative}.sb{font-weight:600}.sy1>*+*{margin-top:0.25rem}.sy3>*+*{margin-top:0.75rem}.sy4>*+*{margin-top:1rem}.t1{font-size:0.875rem;line-height:1.5}.t3{font-size:1.125rem;line-height:1.5}.t4{font-size:1.25rem;line-height:1.5}.t5{font-size:1.5rem;line-height:1.5}.tn{font-variant-numeric:tabular-nums}.tt{letter-spacing:-.025em}.x{flex:1}@media(min-width:768px){.m-c2{grid-template-columns:repeat(2,minmax(0,1fr))}.m-ib{display:inline-block}}@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}@keyframes ss-rise{from{transform:translateY(24px)}}@keyframes ss-spin{to{transform:rotateY(1turn)}}[hidden]{display:none!important}</style>
 </head>
 <body>
 
 <header class="wrap mx f ac g4 py4">
   <a href="/" class="t4 b tt nu x">server</a>
   <nav class="f ac g4 md nw" aria-label="Site">
-    <a href="#does" class="nu hd m-ib">What it does</a>
-    <a href="#pwa" class="nu hd m-ib">PWA</a>
-    <a href="#yours" class="nu hd m-ib">Make it yours</a>
-    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="https://github.com/hertonwork/server">GitHub</a>
+    <a href="https://github.com/hertonwork/server" class="nu">GitHub</a>
+    <a href="https://www.npmjs.com/package/@labs_kai/server" class="nu">npm</a>
+    <a href="https://minim.herton.work/" class="nu hd m-ib">Minim</a>
+    <a href="https://sscss.herton.work/" class="nu hd m-ib">sscss</a>
+    <a class="r bs2 ci px4 py2 nu ib an-fx btn" href="#yours">Run it</a>
   </nav>
 </header>
 
 <main id="root">
 
-  <section>
-    <div class="wrap mx gr g8 m-c2 wl">
+  <section class="rel oh hero">
+    <canvas class="traffic" aria-hidden="true"></canvas>
+    <div class="wrap mx gr g8 m-c2 wl rel">
       <div class="an-rise">
         <h1>One file. Zero dependencies.</h1>
-        <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: clone it and start it.</p>
-        <pre class="r bs p4 mt6"><code>git clone https://github.com/hertonwork/server.git
-cd server
-npm start
+        <p class="t3 mt6">A Node web server for a single-page app that does what a static host does — safe paths, brotli, caching, SPA fallback, a PWA — and scores 100 in every Lighthouse category. Nothing to install: one command serves any folder.</p>
+        <pre class="r bs p4 mt6"><code>npx @labs_kai/server dist
 # → http://127.0.0.1:2211</code></pre>
         <p class="f fw g2 mt6"><a class="r ba cw px4 py3 nu sb ib an-fx" href="https://github.com/hertonwork/server">View on GitHub</a> <a class="r bs2 ci px4 py3 nu sb ib an-fx btn" href="#does">What it does</a></p>
       </div>
@@ -353,5 +357,91 @@ $('update').addEventListener('click', async () => { app.sw = 'checking'; await r
 
 addEventListener('load', () => (self.requestIdleCallback || setTimeout)(() => { send().then(measure); health(); worker(); }));
 })();</script>
+<script>const init = () => {
+const scene = ({
+selector: 'canvas.traffic',
+hash: '#traffic',
+frag: `uniform vec3 req,res,grid;uniform float dark;
+float h1(float n){return fract(sin(n*127.1+.7)*43758.5453);}
+void main(){
+vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;
+float H=.84,d=H-uv.y,cx=abs(uv.x-.5);
+float glow=exp(-abs(d)*26.)*exp(-cx*cx*14.)*(.55+.45*dark);
+if(d<=0.){float a=glow*.5;gl_FragColor=vec4(req*a,a);return;}
+float z=.16/d,S=.075;                             // depth, and the lane spacing in world units
+float lx=(uv.x-.5)*asp*z/S,li=floor(lx+.5);       // lanes are lines of constant world x
+vec2 g=vec2(asp*z/(S*r.x),(uv.x-.5)*asp*z/(S*d*r.y));
+float gp=length(g),dp=abs(lx-li)/gp;               // distance to the nearest lane, in screen pixels
+float sharp=smoothstep(3.,10.,1./gp);              // lanes closer than a few pixels fade instead of aliasing
+float line=(1.-smoothstep(.35,1.1,dp))*sharp;
+float fog=exp(-z*.035)*smoothstep(0.,.18,uv.y+.02)*(1.-.65*smoothstep(.28,.5,cx)); // calmer at the far sides
+float hh=h1(li),hk=h1(li+31.7),on=step(.3,hk);
+float dir=hk>.72?-1.:1.,sp=.35+hh*.6,per=1.6+hh*2.4;
+float ph=fract((z-dir*t*sp)/per+hh);
+float q=dir>0.?ph:1.-ph;
+float pulse=pow(q,30.)*on;
+float body=(1.-smoothstep(.6,2.4,dp))*smoothstep(1.5,5.,1./gp); // a little wider than its lane
+vec3 pc=dir>0.?req:res;
+vec3 col=grid*line*(.28+.12*dark)+pc*pulse*body*(1.6+.6*dark)+req*glow*.6;
+float a=clamp(line*(.28+.12*dark)+pulse*body*1.4+glow*.6,0.,1.)*fog+glow*.3*(1.-fog);
+gl_FragColor=vec4(col*fog+req*glow*.3*(1.-fog),a);}`,
+theme(token, dark, set) {
+const acc = token('--acc'), ink = token('--ink');
+set('req', acc);
+set('res', dark ? acc.map((c, i) => c * .35 + ink[i] * .65) : acc.map((c, i) => c * .45 + ink[i] * .55));
+set('grid', dark ? ink.map((c) => c * .55) : ink.map((c) => c * .7));
+set('dark', dark ? 1 : 0);
+},
+scale: 0.75,
+});
+if (!scene) return;
+const canvas = document.querySelector(scene.selector);
+if (!canvas) return;
+const gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true });
+if (!gl) return;
+const force = location.hash === scene.hash, info = gl.getExtension('WEBGL_debug_renderer_info');
+if (!force && /swiftshader|llvmpipe|softpipe|software|mesa offscreen/i.test(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : '')) return;
+if (!force && navigator.connection && navigator.connection.saveData) return;
+
+const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+const prog = gl.createProgram();
+gl.attachShader(prog, sh(gl.VERTEX_SHADER, 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}'));
+gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, 'precision mediump float;uniform vec2 r;uniform float t;' + scene.frag));
+gl.linkProgram(prog);
+if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+gl.useProgram(prog);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+const u = (n) => gl.getUniformLocation(prog, n), uR = u('r'), uT = u('t');
+
+const rgb = (s) => { const m = (s || '').trim().match(/^#([0-9a-f]{3,6})$/i); if (!m) return [0, 0, 0]; const x = m[1].length === 3 ? [...m[1]].map((c) => c + c).join('') : m[1]; return [0, 2, 4].map((i) => parseInt(x.slice(i, i + 2), 16) / 255); };
+const dark = matchMedia('(prefers-color-scheme: dark)');
+const theme = () => { const cs = getComputedStyle(document.documentElement); scene.theme((name) => rgb(cs.getPropertyValue(name)), dark.matches, (n, v) => (v.length === 3 ? gl.uniform3fv(u(n), v) : gl.uniform1f(u(n), v))); };
+theme(); dark.addEventListener('change', theme);
+
+const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let scale = scene.scale || 0.5, w = 0, h = 0, visible = true, raf = 0, start = performance.now(), probe = !force, last = 0, slow = 0, n = 0;
+const size = () => {
+const W = Math.max(1, Math.round(canvas.clientWidth * scale)), H = Math.max(1, Math.round(canvas.clientHeight * scale));
+if (W !== w || H !== h) { w = canvas.width = W; h = canvas.height = H; gl.viewport(0, 0, w, h); gl.uniform2f(uR, w, h); }
+};
+const frame = (now) => {
+raf = 0; size();
+gl.uniform1f(uT, (now - start) / 1000);
+gl.drawArrays(gl.TRIANGLES, 0, 3);
+if (probe) { probe = false; const t0 = performance.now(); gl.finish(); if (performance.now() - t0 > 40) { canvas.remove(); return; } }
+canvas.classList.add('on');
+if (last && n < 90) { n++; if (now - last > 19) slow++; if (n % 30 === 0) { if (slow > 8 && scale > 0.2) scale *= 0.7; slow = 0; } }
+last = now;
+if (!still && visible && !document.hidden) raf = requestAnimationFrame(frame);
+};
+const go = () => { if (!raf) raf = requestAnimationFrame(frame); };
+new IntersectionObserver((e) => { visible = e[0].isIntersecting; if (visible) go(); }).observe(canvas);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) go(); });
+addEventListener('resize', go);
+go();
+};
+addEventListener('load', () => ('requestIdleCallback' in window ? requestIdleCallback(init, { timeout: 1500 }) : setTimeout(init, 300)));</script>
 </body>
 </html>

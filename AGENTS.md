@@ -18,7 +18,7 @@ verifies everything.
 | `site/sw.js` | the service worker template; the build fills `__VERSION__` (a hash of every precached file) and `__PRECACHE__` | yes |
 | `scripts/build.mjs` | `site/` → `public/`: inlines Minim and `app.js`, generates the sscss block for each page, versions the service worker | yes |
 | `scripts/check.mjs` | the whole verification: tests, build (fails in CI when `public/` is stale), preflight, Lighthouse against this server | yes |
-| `scripts/vendor.mjs`, `vendor/` | the three vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker). Refresh with `npm run vendor` | vendored files: no, refresh them |
+| `scripts/vendor.mjs`, `vendor/` | the vendored tools: `minim.min.js` (Minim), `sscss.mjs` (the CSS generator), `preflight.mjs` (the Minim page checker), `shader-hero/` (the hero animation: the harness and the `traffic` scene from Minim's shader-hero skill). Refresh with `npm run vendor` | vendored files: no, refresh them (a change to the scene goes to the skill in the Minim repo first) |
 | `scripts/shots.mjs`, `scripts/fireworks.mjs` | manifest screenshots + `preview.jpg`, and the Lighthouse fireworks GIF, both from this server (need Playwright, the GIF also `lighthouse` and ImageMagick; dev-only) | yes |
 | `package.json` | published as `@labs_kai/server`: only `lib/`, `server.js`, README and LICENSE ship (16 KB); the `server` bin is what `npx @labs_kai/server` runs | yes |
 | `.github/workflows/publish.yml` | a published GitHub release `vX.Y.Z` → tests, tag = package.json version, `npm publish --provenance` (secret `NPM_TOKEN`) | yes |
@@ -65,6 +65,9 @@ npm run fireworks       # public/lighthouse.gif (Playwright + lighthouse + Image
   fingerprinted assets (`name.3f9c2a1b.ext`) are immutable for a year; everything else a day. Don't add per-file rules.
 - **Lighthouse measures the real server**, not a file: compression, caching headers and the service worker all count.
   Run it with `npm run check`; the mobile and desktop presets must both be 100 in every category.
+- **The hero animation runs on real GPUs only.** The shader-hero harness starts after load, skips software
+  renderers (Lighthouse's own Chrome), pauses off-screen and draws one still frame under reduced motion; the page
+  must be complete without it. To see it in a headless browser, open the page with `#traffic`.
 - **Design as a decision.** Large type in the system font, sections that each have their own composition, surfaces
   separated by a tone step, no gradients, hairlines or emoji in content, one accent action per screen. The rules are
   `references/design.md` in the Minim page skill; the page follows them.

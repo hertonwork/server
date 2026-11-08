@@ -32,6 +32,13 @@ jobs:
       - run: npm run build
       - name: public/ matches site/
         run: git diff --exit-code -- public
+      # A static host has no process, so /api/health would be a 404 — a console error, and Lighthouse's Best Practices
+      # counts it. In the published copy only (never in public/), a file at that path says what this is; the page reads
+      # it as "static host". On simple-server the route answers first and this file doesn't exist.
+      - name: Static stand-in for /api/health
+        run: |
+          mkdir -p public/api
+          printf '{"ok":false,"static":true,"note":"A static copy of the page: there is no process here. Clone the repository and run npm start for the live server."}\n' > public/api/health
       - uses: actions/configure-pages@v5
         with:
           enablement: true

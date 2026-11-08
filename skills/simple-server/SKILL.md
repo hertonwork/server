@@ -151,5 +151,13 @@ the server's, not Pages'). The server itself runs wherever `npm start` runs.
   exist and an encoded slash (`%2f`) is a 400. The page detects it (no `/api/health`) and shows, under each answer,
   what `npm start` answers (`data-expect` on the options); the field section measures the visitor's own page load,
   which is true on any host, and shows process stats only when there is a process.
+- **Notes that appear after load move the page.** On GitHub Pages the static-host note grew the hero card by 40 px and
+  pushed the next section down (CLS 0.024, desktop only — so only the live audit saw it). Both notes now share one
+  grid cell and toggle `visibility`, so the cell is as tall as the longer one at every width; header rows are one line
+  (`text-overflow: ellipsis`, full value in `title`) so a long real ETag can't wrap where the first paint's didn't.
+  Measure the next section's top before and after load at several widths, in both modes.
+- **A 404 is a console error.** On a static host `/api/health` 404'd and Best Practices dropped to 96. The Pages
+  deploy writes a stand-in `api/health` (`{"static": true}`) into the published copy only; the page reads it as
+  "static host".
 - **Lower-casing URLs** (v1) made `Upper.TXT` unreachable on Linux; **`max-age=31536000` on HTML** (v1) hid every
   deploy from returning visitors. Type-based caching and case-sensitive paths are the fix, not per-file rules.

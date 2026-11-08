@@ -64,6 +64,7 @@
       const r = await fetch('/api/health', { headers: probe, cache: 'no-store' });
       if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) throw new Error(String(r.status));
       const h = await r.json();
+      if (h.static) throw new Error('static host');   // the Pages deploy ships a file here that says so
       app.requests = h.requests.toLocaleString();
       app.uptime = span(h.uptime);
       app.node = h.node;
@@ -71,6 +72,7 @@
       polling ??= setInterval(() => { if (!document.hidden) health(); }, 10_000);
     } catch {
       app.proc = false; app.static = true;   // nothing to poll: a static host has no process
+      app.live = false;
     }
   }
 
